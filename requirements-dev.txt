@@ -1,0 +1,3 @@
+# Dev/test extras — not required at runtime on the openclaw box.
+-r requirements.txt
+pytest>=8.0

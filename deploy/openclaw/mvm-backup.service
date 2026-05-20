@@ -1,0 +1,22 @@
+[Unit]
+Description=Nightly rsync of monkey-vs-machine SQLite state to backup target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=mvm
+Group=mvm
+EnvironmentFile=/etc/openclaw/backup.env
+# Defaults assume you set BACKUP_TARGET (and SSH keys if it's remote) in /etc/openclaw/backup.env.
+# Example BACKUP_TARGET values:
+#   /srv/mvm-backups                       (local NAS mount)
+#   backup-host:/srv/mvm-backups            (ssh: ensure mvm@openclaw can ssh to backup-host)
+ExecStart=/usr/bin/env bash -c 'set -euo pipefail; \
+    test -n "$BACKUP_TARGET" || { echo "BACKUP_TARGET not set in /etc/openclaw/backup.env"; exit 2; }; \
+    STAMP=$(date -u +%%Y%%m%%dT%%H%%M%%SZ); \
+    /usr/bin/rsync -a /opt/mvm/data/state.db "$BACKUP_TARGET/state.db.$STAMP"; \
+    /usr/bin/rsync -a /opt/mvm/data/state.db "$BACKUP_TARGET/state.db.latest"; \
+    echo "Backup ok: $BACKUP_TARGET/state.db.$STAMP"'
+StandardOutput=append:/var/log/mvm/backup.log
+StandardError=append:/var/log/mvm/backup.log

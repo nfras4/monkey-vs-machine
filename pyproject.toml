@@ -1,0 +1,8 @@
+[project]
+name = "monkey-vs-machine"
+version = "0.1.0"
+description = "AI trader vs 100,000 random monkeys on S&P 500 historical data"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]

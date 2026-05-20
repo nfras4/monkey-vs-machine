@@ -1,0 +1,22 @@
+[Unit]
+Description=Monkey-vs-Machine daily tick (run + push to D1)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=mvm
+Group=mvm
+WorkingDirectory=/opt/mvm
+EnvironmentFile=/etc/openclaw/secrets.env
+ExecStart=/opt/mvm/.venv/bin/python /opt/mvm/scripts/run_tick.py
+# push_to_d1 defaults --date to today US/Eastern, matching run_tick.
+# systemd does NOT do shell substitution on ExecStart*, so we never use $(...) here.
+ExecStartPost=/opt/mvm/.venv/bin/python /opt/mvm/scripts/push_to_d1.py
+StandardOutput=append:/var/log/mvm/tick.log
+StandardError=append:/var/log/mvm/tick.log
+TimeoutStartSec=900
+OnFailure=mvm-tick-alert.service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Mvm tick failure alert
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/logger -t mvm-alert "mvm-tick failed at $(date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ)"

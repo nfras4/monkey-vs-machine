@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily run of mvm-tick (06:00 Australia/Sydney)
+Requires=mvm-tick.service
+
+[Timer]
+OnCalendar=06:00
+Persistent=true
+RandomizedDelaySec=120
+Unit=mvm-tick.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Nightly mvm-backup at 03:00 Sydney
+Requires=mvm-backup.service
+
+[Timer]
+OnCalendar=03:00
+Persistent=true
+RandomizedDelaySec=60
+Unit=mvm-backup.service
+
+[Install]
+WantedBy=timers.target

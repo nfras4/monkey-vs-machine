@@ -1,0 +1,12 @@
+# Pinned-for-determinism: bit-identical reruns of a tick require a stable env.
+# Bumping any of these means a new `runtime_fingerprint` and replay of prior
+# dates is no longer bit-identical (forward simulation is still fine).
+yfinance==1.3.0
+pandas==3.0.3
+numpy==2.4.6
+scikit-learn==1.8.0
+vaderSentiment==3.3.2
+streamlit==1.57.0
+plotly==6.7.0
+pyarrow==24.0.0
+requests==2.34.2

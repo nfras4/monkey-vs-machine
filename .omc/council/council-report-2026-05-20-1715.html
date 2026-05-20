@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Council Verdict — AI Training Swappability + Overfitting Controls</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --accent: #1f2937;
+    --green: #047857;
+    --red: #b91c1c;
+    --amber: #b45309;
+    --blue: #1d4ed8;
+    --violet: #6d28d9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    margin: 0;
+    padding: 32px 24px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  header {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  h1 {
+    font-size: 26px;
+    margin: 6px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .meta { color: var(--muted); font-size: 13px; }
+  .question-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+    font-size: 14px;
+  }
+  .question-box .eyebrow { margin-bottom: 6px; }
+  .verdict {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+  .verdict h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 22px 0 8px;
+    font-weight: 700;
+  }
+  .verdict h2:first-child { margin-top: 0; }
+  .verdict p, .verdict ul { font-size: 14.5px; margin: 8px 0; }
+  .verdict ul { padding-left: 22px; }
+  .verdict li { margin-bottom: 6px; }
+  .first-move {
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 24px 0 0;
+  }
+  .first-move .eyebrow { color: var(--green); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 18px 0 28px;
+  }
+  .advisor-tag {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .advisor-tag .role {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+    font-size: 10.5px;
+  }
+  .advisor-tag.strongest { border-color: var(--green); background: #ecfdf5; }
+  .advisor-tag.blindspot { border-color: var(--red); background: #fef2f2; }
+  .advisor-tag .badge {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .advisor-tag.strongest .badge { background: #047857; color: #fff; }
+  .advisor-tag.blindspot .badge { background: #b91c1c; color: #fff; }
+  details {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--accent);
+    list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 8px;
+    color: var(--muted);
+    transition: transform 0.15s;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details .body {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    white-space: pre-wrap;
+    line-height: 1.55;
+  }
+  .advisor-contrarian { border-left: 4px solid var(--red); }
+  .advisor-first-principles { border-left: 4px solid var(--blue); }
+  .advisor-expansionist { border-left: 4px solid var(--violet); }
+  .advisor-outsider { border-left: 4px solid var(--amber); }
+  .advisor-executor { border-left: 4px solid var(--green); }
+  code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  pre {
+    padding: 12px 14px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .section-h {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 32px 0 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="eyebrow">LLM Council Verdict</div>
+  <h1>AI training swappability + overfitting controls in the perpetual-loop plan</h1>
+  <div class="meta">2026-05-20 · Project: monkey-vs-machine · Plan: <code>.omc/plans/perpetual-loop-impl.md</code></div>
+</header>
+
+<div class="question-box">
+  <div class="eyebrow">Question brought to the council</div>
+  <p>Does the perpetual-loop plan keep the AI training method swappable (LightGBM / XGBoost / RandomForest / small NN / stacking ensemble) and overfitting controllable later (purged CV, rolling vs expanding window, regularisation, early stopping, embargo, validation Sharpe gates, feature ablation, ensemble averaging) — without breaking the bit-identical idempotency contract or the persisted history? And can the schema later run multiple model variants in parallel as a "league"? What concrete v1 changes preserve full extensibility without bloating v1?</p>
+</div>
+
+<div class="verdict">
+  <h2>Where the council agrees</h2>
+  <ul>
+    <li><strong><code>model_id</code> becomes a first-class column on every AI table, today.</strong> 5/5 advisors. PK becomes <code>(date, model_id)</code> on <code>ai_model_history</code> and <code>(date, ticker, model_id)</code> on <code>ai_portfolio_history</code>.</li>
+    <li><strong>Kill the typed sklearn-vocabulary columns.</strong> Replace <code>feature_importances</code>, <code>hyperparams</code>, <code>train_score</code> with <code>config_json</code> + <code>diagnostics_json</code>. 4/5 advisors.</li>
+    <li><strong>No ABC, no plugin system, no YAML, no CV framework in v1.</strong> YAGNI until model #2 actually lands.</li>
+    <li><strong>The fit interface is a tiny duck-typed contract</strong>: <code>.fit(X, y, seed)</code> + <code>.predict_proba(X)</code>. <code>runner_tick.py</code> never names an algorithm; it iterates a registry dict.</li>
+    <li><strong>The <code>ai_holdings_current</code> VIEW becomes a footgun the moment two models exist.</strong> Replace with a parameterised query that takes <code>model_id</code>.</li>
+  </ul>
+
+  <h2>Where the council clashes</h2>
+  <p><strong>Is bit-identical determinism survivable across model families?</strong></p>
+  <ul>
+    <li><strong>Contrarian:</strong> No — OpenMP reduction order, CUDA atomics, BLAS thread counts and library RNG semantics make "bit-identical" a sklearn-HistGBM-specific property. Document it that way.</li>
+    <li><strong>Outsider / Executor / First Principles:</strong> Yes, <em>per family</em>. The contract is <code>(date, prices, config, model_id) → identical output</code> within a runtime, never cross-family. Write the test, pin the env, move on.</li>
+  </ul>
+  <p>The Outsider/Executor framing wins the contract definition. Contrarian's threat model wins on environment dependence — which the peer review caught and turned into a fix (see blind spots).</p>
+
+  <p><strong>Add an <code>ai_predictions</code> table now?</strong></p>
+  <ul>
+    <li><strong>Expansionist:</strong> Yes — unlocks stacking, ensemble averaging, disagreement-trading, a league dashboard.</li>
+    <li><strong>Everyone else, implicitly:</strong> Premature. 3 of 5 peer reviews flagged Expansionist as the biggest blind spot — a leaderboard built on non-reproducible scores is worse than no leaderboard, and a second table + view before model #2 exists is a six-month side-project masquerading as v1.</li>
+  </ul>
+  <p>Expansionist loses on the user's constraints. The league is <code>len(MODELS) &gt; 1</code> in a registry dict, not a new table.</p>
+
+  <h2>Blind spots the council caught</h2>
+  <ol>
+    <li><strong>Environment fingerprint, not just config hash.</strong> Two reviewers independently named it: <code>random_state</code> + <code>config_json</code> is insufficient. Bit-identical reruns depend on <code>python_version</code>, <code>numpy_version</code>, <code>sklearn_version</code>, lockfile hash, BLAS variant, thread count. Without a <code>runtime_fingerprint</code> column, the first <code>pip install -U</code> silently invalidates every historical row.</li>
+    <li><strong>Feature pipeline code versioning.</strong> A <code>features_hash</code> of the input matrix is necessary but not sufficient — pandas/numpy patch bumps silently change rolling-window NaN handling. Solved by the same lockfile hash.</li>
+    <li><strong>Train-window provenance.</strong> Daily retrain on an expanding window means one <code>model_id</code> produces N artifacts over N days. Need <code>train_window_end</code> (or <code>train_window_start, train_window_end</code>) on the row to disambiguate.</li>
+    <li><strong>Wall-clock + storage cost of a league.</strong> A league of 5+ families retraining daily is fine year 1, painful year 5. Need a <code>training_seconds</code> diagnostic and a retirement protocol (a <code>retired_at</code> column or <code>active</code> flag) — "the league needs a graveyard, not just a leaderboard."</li>
+  </ol>
+
+  <h2>The recommendation</h2>
+  <p>Slightly larger than Executor's "Monday morning" patch, smaller than Expansionist's vision. One migration on SQLite + D1:</p>
+<pre><code>-- ai_model_history additions
+ALTER TABLE ai_model_history ADD COLUMN model_id TEXT NOT NULL DEFAULT 'hgb_v1';
+ALTER TABLE ai_model_history ADD COLUMN model_family TEXT NOT NULL DEFAULT 'sklearn_hgb';
+ALTER TABLE ai_model_history ADD COLUMN config_json TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE ai_model_history ADD COLUMN diagnostics_json TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE ai_model_history ADD COLUMN runtime_fingerprint TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE ai_model_history ADD COLUMN features_hash TEXT NOT NULL DEFAULT '';
+ALTER TABLE ai_model_history ADD COLUMN train_window_end TEXT NOT NULL DEFAULT '';
+ALTER TABLE ai_model_history ADD COLUMN training_seconds REAL;
+-- Drop typed columns; data moves into config_json / diagnostics_json
+-- New PK: (date, model_id)
+
+-- ai_portfolio_history
+ALTER TABLE ai_portfolio_history ADD COLUMN model_id TEXT NOT NULL DEFAULT 'hgb_v1';
+-- New PK: (date, ticker, model_id)
+
+-- ai_holdings_current: drop the VIEW. Replace with parameterised query taking model_id.</code></pre>
+
+  <p><strong>Code:</strong></p>
+  <ul>
+    <li><code>src/mvm/models/registry.py</code> — <code>MODELS = {"hgb_v1": build_hgb_v1}</code>. Builders expose <code>.fit(X, y, seed)</code> + <code>.predict_proba(X)</code>. No ABC.</li>
+    <li><code>src/mvm/runner_tick.py</code> — iterate <code>MODELS.items()</code>. Write one row per <code>(date, model_id)</code>. Never name an algorithm.</li>
+    <li><code>src/mvm/runtime_fingerprint.py</code> — returns <code>{python, numpy, sklearn, pandas, lockfile_sha256, blas, threads}</code> as JSON. Called once per tick.</li>
+    <li><code>tests/test_determinism.py</code> — run tick for date D twice in one process, assert <code>weights</code> + <code>feature_importances_sha256</code> are byte-identical. CI must run it.</li>
+    <li><code>DETERMINISM.md</code> — 10 lines stating the contract is per-<code>model_id</code> per-<code>runtime_fingerprint</code>; lockfile bumps invalidate prior rows for replay (not forward simulation).</li>
+  </ul>
+
+  <p><strong>Deferred until model #2 actually exists:</strong></p>
+  <ul>
+    <li><code>ai_predictions</code> table (stacking/ensemble)</li>
+    <li>Leaderboard view</li>
+    <li>Purged CV, embargo logic, rolling-vs-expanding switches, validation Sharpe gates, ensemble averaging</li>
+    <li>Plugin system / YAML config</li>
+    <li><code>retired_at</code> flag (add when first model dies)</li>
+  </ul>
+
+  <p>Total work ≈ 3 hours (Executor's 2 + an hour for <code>runtime_fingerprint</code> + the determinism test).</p>
+
+  <div class="first-move">
+    <div class="eyebrow">The one thing to do first</div>
+    <p style="margin-bottom: 0;"><strong>Write the determinism test before touching the schema.</strong> Run <code>runner_tick(date=D)</code> twice in one process, hash <code>weights</code> and <code>feature_importances</code>, assert equality. Check it into CI. Everything else in this verdict is theatre if that test doesn't pass on the current code today. If it passes, you have a real contract to extend. If it doesn't, the v1 plan is wrong and you need to know now — not after adding <code>model_id</code>.</p>
+  </div>
+</div>
+
+<div class="section-h">Advisor positions at a glance</div>
+<div class="grid">
+  <div class="advisor-tag strongest">
+    The Contrarian
+    <span class="role">downside hunter</span>
+    <span class="badge">Strongest ×2</span>
+  </div>
+  <div class="advisor-tag">
+    First Principles
+    <span class="role">rebuild from zero</span>
+  </div>
+  <div class="advisor-tag blindspot">
+    The Expansionist
+    <span class="role">upside hunter</span>
+    <span class="badge">Blind spot ×3</span>
+  </div>
+  <div class="advisor-tag strongest">
+    The Outsider
+    <span class="role">fresh eyes</span>
+    <span class="badge">Strongest ×2</span>
+  </div>
+  <div class="advisor-tag strongest">
+    The Executor
+    <span class="role">monday morning</span>
+    <span class="badge">Strongest ×1</span>
+  </div>
+</div>
+
+<div class="section-h">Full advisor responses</div>
+
+<details class="advisor-contrarian">
+  <summary>The Contrarian — "bit-identical and swappable are in direct tension"</summary>
+  <div class="body">You're asking the wrong question. You've already decided the answer is "yes, with a few interfaces" — what you need is for someone to point out the trap you're walking into.
+
+The fatal flaw: "bit-identical reruns" and "swappable models" are in direct tension, and you haven't acknowledged it.
+
+The moment you swap sklearn for LightGBM/XGBoost/Torch, your determinism contract breaks. Different libraries have different RNG semantics, different float reduction orders, different thread-nondeterminism (LightGBM num_threads, XGBoost nthread, CUDA atomics in NN). SHA256-seeding a random_state int does nothing for OpenMP reduction order. Your "bit-identical" rerun guarantee is sklearn-HistGBM-specific and you don't know it yet.
+
+Second flaw: ai_model_history schema bakes in sklearn vocabulary. feature_importances, hyperparams as what — JSON blob? train_score as what metric? A stacking ensemble has no single feature_importances. A NN has no train_score in the same sense. You'll either lie in the columns or migrate the table — and migrating breaks reruns of old dates.
+
+Third flaw: "League of competing AIs" with ai_portfolio_history(date, ticker, weight) having no model_id column. You'll bolt it on later, default to 'default', and now your D1 mirror, dashboard, and VIEW all need conditional logic forever.
+
+What to add in v1, non-negotiable:
+1. model_id TEXT NOT NULL on every AI table now. Default 'v1_histgbm'. Composite PK (date, model_id) and (date, ticker, model_id).
+2. artifact_json TEXT blob replacing typed columns. Schema-per-model, not schema-per-database.
+3. Pin determinism to one library family. Document it as sklearn-HistGBM-determinism, not "AI-determinism". Stop pretending the contract survives a swap.
+4. Kill ai_holdings_current VIEW. Make it a parameterized query taking model_id.
+
+Everything else is yak-shaving.</div>
+</details>
+
+<details class="advisor-first-principles">
+  <summary>The First Principles Thinker — "smallest persistence contract = (date, prices, config) → output"</summary>
+  <div class="body">You're asking three "is my plan extensible enough" questions. That's the wrong question. The real question is: what is the smallest persistence contract that makes every future variant a pure function of (date, prices, config)?
+
+Strip it down. You have three things, not three concerns:
+
+1. A model_id (string). Not a table assumption. Every row in ai_model_history and ai_portfolio_history needs a model_id column NOW. That single change kills assumptions 1 and 3 simultaneously. "Single model assumed" is the actual bug in your v1.
+
+2. A config blob (JSON). Hyperparams, algo choice, CV scheme, embargo, window type, regularization, ensemble recipe — all of it. One column: config_json. One column: config_hash. Determinism contract becomes: (date, prices, config_hash) -> identical output. Not "same hyperparams" — same *everything*. Overfitting controls (#2) are just config fields you haven't invented yet.
+
+3. A fit interface. One function: fit_predict(train_df, predict_df, config, rng) -> (scores, diagnostics_dict). sklearn, LightGBM, NN, stacking — all conform. runner_tick.py never names an algorithm. ai_trader.py becomes a 20-line dispatcher reading config["algo"].
+
+What you do NOT add to v1: actual LightGBM, actual CV, actual league UI. Those are YAGNI.
+
+What you DO add to v1, today:
+- model_id column everywhere (default "v1_hgb")
+- config_json + config_hash columns (replaces hyperparams)
+- diagnostics_json column (replaces train_score, feature_importances)
+- Primary key becomes (date, model_id) not (date)
+- The view ai_holdings_current filters by a default_model_id setting
+
+That's it. Four schema changes. Everything else is future config.</div>
+</details>
+
+<details class="advisor-expansionist">
+  <summary>The Expansionist — "the hidden gold is the league"</summary>
+  <div class="body">The hidden gold here isn't "swap LightGBM in later." It's the league. Build for that NOW and you've quietly created a personal Numerai/Kaggle inside your own simulator, with bit-identical replay. That's a content engine, a research lab, and a portfolio piece all at once.
+
+Concrete v1 changes that unlock 10x upside:
+
+1. model_id is a first-class column everywhere. ai_model_history(model_id, date, ...), ai_portfolio_history(model_id, date, ticker, weight), drop the "single model assumed" baggage today. Cost: one column. Payoff: every future variant lights up automatically. Your "current" view becomes WHERE model_id = 'champion'.
+
+2. Persist predictions, not just weights. Add ai_predictions(model_id, date, ticker, score, rank). This is the unlock for stacking, ensemble averaging, calibration analysis, and disagreement-based features ("trade where models disagree most"). Costs ~nothing. Enables everything.
+
+3. ModelSpec as a hashable dict ({family, hyperparams, feature_set, cv_scheme, window_type, seed_salt}) -> model_id = sha256(spec). Now determinism, registry, and the league all share one primitive. Adding purged CV later? New field, new hash, new model_id, old history untouched.
+
+4. A leaderboard view from day one, even with one model. Forces you to define the scoring contract (Sharpe? hit rate? turnover-adjusted?) before you have political attachment to "the" model.
+
+5. Feature pipeline as a versioned artifact (feature_set_id). Lets you ablate features as separate "models" in the league without code forks.
+
+The dashboard angle nobody's mentioning: a live league standings page is dramatically more compelling than "here's my one model's equity curve." That's the upside.</div>
+</details>
+
+<details class="advisor-outsider">
+  <summary>The Outsider — "determinism is a vibe, not a test"</summary>
+  <div class="body">Three things jump out as an outsider reading this cold.
+
+1. You have a single-model schema for a question that already names six successors. ai_model_history keys on (date) with "single model assumed". The moment you add LightGBM alongside HGB, that PK breaks and you're writing a migration. Just add model_id TEXT to the PK on ai_model_history and ai_portfolio_history NOW. Make ai_holdings_current a VIEW filtered by a configured active_model_id. That single change unlocks the "league" with zero v1 cost — you just run one model and write model_id='hgb_v1'.
+
+2. "Hyperparams" as a column is a trap. Different model families have wildly different param shapes, and feature_importances doesn't exist for NNs or stacks. Store both as JSON blobs (config_json, diagnostics_json). Stop pretending the schema knows what's in them. Add a model_family column so the dashboard can branch on rendering.
+
+3. The determinism contract is undefined in writing. You say "bit-identical given same prices" and "RNG via SHA256(purpose, date)" — but is that a tested invariant or a vibe? Write one test NOW: run tick for date D twice, assert identical feature_importances hash and identical weights. Without that test, every new model you bolt on will silently break determinism and you won't know which one did it.
+
+What I'd skip in v1: Don't build the abstract Trader base class yet. Don't add CV plumbing. Don't add embargo logic. Those are YAGNI until model #2 exists. The schema changes and the determinism test are the only things that are expensive to retrofit. Everything else is a refactor you can do when it actually hurts.</div>
+</details>
+
+<details class="advisor-executor">
+  <summary>The Executor — "three changes Monday morning, two hours total"</summary>
+  <div class="body">Three changes Monday morning. Skip everything else.
+
+1. Add a model_id column NOW. Everywhere.
+ai_model_history, ai_portfolio_history, ai_holdings_current view, D1 mirrors. Default value 'hgb_v1'. That's it. Without this you cannot run a league, cannot A/B, cannot even rename your hyperparams without a migration. It's one ALTER TABLE today vs. a painful backfill in three months. Make the PK (date, model_id) for history and (date, ticker, model_id) for portfolio. Done.
+
+2. One file: models/registry.py with a dict.
+   MODELS = {"hgb_v1": build_hgb_v1}
+runner_tick.py does `for model_id, builder in MODELS.items(): train_and_store(model_id, builder, ...)`. Each builder returns an object with .fit(X, y, seed) and .predict_proba(X). That's the entire interface. No ABC, no plugin system, no config YAML. When you want LightGBM, add one entry. When you want stacking, add one entry whose builder wraps two others. The "league" is literally len(MODELS) > 1.
+
+3. Persist the feature matrix hash + label cutoff date per row.
+Add features_hash TEXT, label_cutoff_date DATE to ai_model_history. Costs nothing now. Lets you later prove determinism after you swap libraries, detect silent feature drift, and verify your 5-day embargo held. Without this, six months from now you cannot tell if a backtest divergence is a bug or a feature change.
+
+Skip for v1: CV framework, validation gates, ensemble code, abstract base classes, model serialization. YAGNI. The three changes above unlock all of them later without touching runner_tick.py again.
+
+Total work: ~2 hours. Ship today.</div>
+</details>
+
+<details>
+  <summary>Peer review highlights (5 anonymised reviews)</summary>
+  <div class="body">**Review 1** — Strongest: Contrarian (only one to name the actual cross-library determinism trap). Blind spot: Expansionist (seduced by league framing, skips the determinism problem entirely — a leaderboard on non-reproducible scores is worse than no leaderboard). All missed: feature pipeline CODE versioning — pandas/numpy upgrade silently changes rolling-window NaN handling.
+
+**Review 2** — Strongest: Executor (only response that names files, defines an interface, and adds features_hash + label_cutoff_date which simultaneously solves determinism proof + embargo verification + drift detection). Blind spot: First Principles (punts the determinism question Contrarian correctly identifies). All missed: runtime fingerprint in the row — python_version, library_versions_json, BLAS variant, thread count. Bit-identical reruns are a property of the environment, not just the code.
+
+**Review 3** — Strongest: Contrarian (only one engaging with the actual contract conflict; pretending otherwise ships a v1 that lies to itself). Blind spot: Expansionist (league framing seductive but never addresses determinism; bloats v1 before model #2 exists). All missed: retrain cadence — daily retrain on expanding window means same ModelSpec produces N artifacts over N days; need (model_id, train_window_end).
+
+**Review 4** — Strongest: Outsider (only one to name determinism as a TESTABLE property rather than a vibe; "write the determinism test now" is load-bearing). Blind spot: Contrarian (defeatist; determinism is per-family, not cross-family — "document as sklearn-only" forecloses the league prematurely). All missed: wall-clock budget per model_id (training_seconds), prediction storage growth, retirement protocol — "the league needs a graveyard."
+
+**Review 5** — Strongest: Outsider (names determinism as load-bearing risk and demands a test, not a promise; Contrarian capitulates instead of forcing a contract). Blind spot: Expansionist (league pitch ignores the one-developer "for fun" constraint — a six-month side-project masquerading as v1). All missed: determinism drift on upstream library patch-bumps; the contract needs a pinned-lockfile clause, not just a test.</div>
+</details>
+
+<footer>
+  Generated 2026-05-20 17:15 AEST · Project: D:\claudecode\monkey-vs-machine · Methodology: <a href="https://x.com/karpathy">@karpathy</a>'s LLM Council adapted for Claude Code sub-agents
+</footer>
+
+</div>
+</body>
+</html>
