@@ -1,7 +1,7 @@
 <script lang="ts">
   let { data } = $props();
-  $: latestDiag = data.history.at(-1)?.diagnostics_json;
-  $: importances = (() => {
+  const latestDiag = $derived(data.history.at(-1)?.diagnostics_json);
+  const importances = $derived.by(() => {
     try {
       const d = latestDiag ? JSON.parse(latestDiag) : null;
       const cols = ["ret_1d","ret_5d","ret_20d","vol_20","vol_60","rsi_14","macd_sig","vol_z","abn_ret"];
@@ -9,7 +9,7 @@
       return cols.map((c, i) => ({ feature: c, imp: imps[i] ?? 0 }))
                  .sort((a, b) => b.imp - a.imp);
     } catch { return []; }
-  })();
+  });
 </script>
 
 <h2>AI internals — registered model_ids: {data.modelIds.join(", ") || "(none yet)"}</h2>

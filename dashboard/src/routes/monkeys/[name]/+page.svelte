@@ -3,14 +3,14 @@
 
   let { data } = $props();
 
-  const values = data.history.map((h) => h.equity);
-  const start = values[0];
-  const end = values[values.length - 1];
-  const pctChange = start ? ((end - start) / start) * 100 : 0;
+  const values = $derived(data.history.map((h) => h.equity));
+  const start = $derived(values[0]);
+  const end = $derived(values[values.length - 1]);
+  const pctChange = $derived(start ? ((end - start) / start) * 100 : 0);
   const fmt = (n: number | null | undefined) =>
     n == null ? "—" : `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  const category = data.history.at(-1)?.category ?? "unknown";
-  const monkeyId = data.history.at(-1)?.monkey_id ?? null;
+  const category = $derived(data.history.at(-1)?.category ?? "unknown");
+  const monkeyId = $derived(data.history.at(-1)?.monkey_id ?? null);
 </script>
 
 <section class="hero">
