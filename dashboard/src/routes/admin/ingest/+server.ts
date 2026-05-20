@@ -1,19 +1,18 @@
 /**
- * Cloudflare Pages Function: bearer-authenticated D1 ingest from openclaw.
+ * SvelteKit server endpoint: bearer-authenticated D1 ingest from openclaw.
  *
  *   POST /admin/ingest
  *   Authorization: Bearer ${env.MVM_INGEST_TOKEN}
  *   Content-Type: application/json
- *   Body: see scripts/push_to_d1.py build_payload()
  *
- * Idempotent via INSERT OR REPLACE on every table.
+ * Lives inside the SvelteKit worker (rather than as a Pages Function) because
+ * the SvelteKit adapter's _worker.js catches everything — Pages Functions only
+ * fire on routes the SvelteKit router doesn't claim, and `/admin/ingest` was
+ * being swallowed by the SvelteKit 404 page. Same behaviour, same auth, same
+ * D1 batch.
  */
-
-interface Env {
-  DB: D1Database;
-  MVM_INGEST_TOKEN: string;
-  PUBLISH_SCHEMA_VERSION: string;
-}
+import { json, error } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
 
 interface IngestPayload {
   publish_schema_version: number;
@@ -33,41 +32,44 @@ function constantTimeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
-  // --- Auth -----------------------------------------------------------------
+export const POST: RequestHandler = async ({ request, platform }) => {
+  if (!platform?.env?.DB) {
+    throw error(500, "DB binding not available");
+  }
+  const env = platform.env;
+
+  // Auth
   const authHeader = request.headers.get("Authorization") ?? "";
   const m = authHeader.match(/^Bearer\s+(.+)$/);
   if (!m || !env.MVM_INGEST_TOKEN || !constantTimeEqual(m[1], env.MVM_INGEST_TOKEN)) {
-    return new Response("unauthorized", { status: 401 });
+    throw error(401, "unauthorized");
   }
 
-  // --- Parse + schema version ----------------------------------------------
+  // Parse + version check
   let payload: IngestPayload;
   try {
     payload = (await request.json()) as IngestPayload;
   } catch (e) {
-    return new Response(`invalid json: ${(e as Error).message}`, { status: 400 });
+    throw error(400, `invalid json: ${(e as Error).message}`);
   }
 
-  // Fail closed if the env binding is missing — a misconfigured Pages env
-  // must never silently accept v1 payloads with no version check.
   const versionEnv = env.PUBLISH_SCHEMA_VERSION;
   if (!versionEnv) {
-    return new Response("PUBLISH_SCHEMA_VERSION env binding is missing", { status: 500 });
+    throw error(500, "PUBLISH_SCHEMA_VERSION env binding is missing");
   }
   const expectedVersion = Number(versionEnv);
   if (!Number.isFinite(expectedVersion)) {
-    return new Response(`PUBLISH_SCHEMA_VERSION must be a number; got ${versionEnv}`, { status: 500 });
+    throw error(500, `PUBLISH_SCHEMA_VERSION must be a number; got ${versionEnv}`);
   }
   if (payload.publish_schema_version !== expectedVersion) {
-    return new Response(
+    throw error(
+      409,
       `publish_schema_version mismatch: payload=${payload.publish_schema_version} expected=${expectedVersion}`,
-      { status: 409 },
     );
   }
 
-  // --- Build batched statements --------------------------------------------
-  const stmts: D1PreparedStatement[] = [];
+  // Build batched statements
+  const stmts = [];
   const d = payload.date;
 
   if (payload.daily_aggregates) {
@@ -100,15 +102,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     );
   }
 
-  // Replace today's per-(date, model_id) portfolio rows by deleting first, then inserting.
-  const seenPortfolioKeys = new Set<string>();
+  const seen = new Set<string>();
   for (const r of payload.ai_portfolios) {
     const key = `${r.date}|${r.model_id}`;
-    if (!seenPortfolioKeys.has(key)) {
-      seenPortfolioKeys.add(key);
-      stmts.push(
-        env.DB.prepare("DELETE FROM ai_portfolios WHERE date=? AND model_id=?").bind(r.date, r.model_id),
-      );
+    if (!seen.has(key)) {
+      seen.add(key);
+      stmts.push(env.DB.prepare("DELETE FROM ai_portfolios WHERE date=? AND model_id=?").bind(r.date, r.model_id));
     }
     stmts.push(
       env.DB.prepare(
@@ -146,11 +145,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
     await env.DB.batch(stmts);
   } catch (e) {
-    return new Response(`d1 batch failed: ${(e as Error).message}`, { status: 500 });
+    throw error(500, `d1 batch failed: ${(e as Error).message}`);
   }
 
-  return new Response(JSON.stringify({ ok: true, date: d, statements: stmts.length }), {
-    status: 200,
-    headers: { "content-type": "application/json" },
-  });
+  return json({ ok: true, date: d, statements: stmts.length });
 };

@@ -1,13 +1,13 @@
 name = "mvm-dashboard"
 compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]   # SvelteKit's CF adapter uses node:async_hooks
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "mvm-prod"
-database_id = "REPLACE_WITH_REAL_ID_AFTER_wrangler_d1_create"
+database_id = "04504983-c94d-4817-a40e-1af7789195e9"
 
-# Set via `wrangler pages secret put MVM_INGEST_TOKEN` after first deploy.
-# Set PUBLISH_SCHEMA_VERSION via `wrangler pages env put PUBLISH_SCHEMA_VERSION 1`.
-[vars]
-PUBLISH_SCHEMA_VERSION = "1"
+# Both MVM_INGEST_TOKEN and PUBLISH_SCHEMA_VERSION are set as Pages secrets
+# (`wrangler pages secret put ...`). No [vars] block — secrets and vars share a
+# namespace and a duplicate binding blocks deploy.
