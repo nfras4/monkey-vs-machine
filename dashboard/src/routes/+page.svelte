@@ -31,8 +31,12 @@
       { label: "median monkey", value: latestMedian },
     ].filter((c): c is { label: string; value: number } => c.value != null);
     if (candidates.length === 0) return null;
-    return candidates.reduce((a, b) => (a.value >= b.value ? a : b));
+    const best = candidates.reduce((a, b) => (a.value > b.value ? a : b));
+    // Don't declare a winner if everyone is within 0.1% — the curves haven't separated yet.
+    const allTiedish = candidates.every((c) => Math.abs(c.value - best.value) < best.value * 0.001);
+    return allTiedish ? null : best;
   })();
+  const daysOfData = data.aggregates.length;
 </script>
 
 <section class="header">
@@ -52,6 +56,14 @@
       Currently in the lead: <strong>{winner.label}</strong> at <strong>{fmt(winner.value)}</strong>
       &nbsp;·&nbsp;
       {beating.toLocaleString()} of {totalMonkeys.toLocaleString()} monkeys above their starting cash
+    </p>
+  {:else if daysOfData < 5}
+    <p class="winner muted">
+      Too early to call — only {daysOfData} tick{daysOfData === 1 ? "" : "s"} of data so far. Check back in a few days.
+    </p>
+  {:else}
+    <p class="winner muted">
+      Currently tied within 0.1% — the race hasn't separated yet.
     </p>
   {/if}
 </section>
@@ -88,6 +100,7 @@
   .header { margin-bottom: 16px; }
   .tick { color: #6b7280; font-size: 13px; margin: 0 0 4px; }
   .winner { font-size: 14px; margin: 0; color: #1f2937; }
+  .winner.muted { color: #6b7280; font-style: italic; }
   .dot { color: #d1d5db; margin: 0 2px; }
 
   .cards {
