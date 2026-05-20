@@ -1,7 +1,7 @@
 <script lang="ts">
   // Chart.js race chart — AI vs SPY vs monkey median (with 5-95 band).
-  // Lazy-loads chart.js so the bundle doesn't pay for it on tabs that don't need a chart.
-  // Uses Svelte 5 `$effect` per Nick's runes-gotcha note (onMount tree-shakes in prod).
+  // Colors are pulled from CSS custom properties so the chart matches the
+  // active theme; rebuilds on `mvm:theme` events.
   let { dates, aiEquity, spyEquity, monkeyMedian, monkeyP5, monkeyP95, monkeyBest }: {
     dates: string[];
     aiEquity: (number | null)[];
@@ -14,6 +14,147 @@
 
   let canvas: HTMLCanvasElement | undefined = $state();
   let chartInstance: { destroy: () => void } | null = null;
+  let ChartCtor: any = null;
+
+  function cssVar(name: string): string {
+    if (typeof window === "undefined") return "";
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function withAlpha(color: string, alpha: number): string {
+    // oklch(L C H) -> oklch(L C H / alpha) using CSS color-mix if needed.
+    if (!color) return `rgba(0,0,0,${alpha})`;
+    if (color.includes("/")) return color;
+    if (color.startsWith("oklch(")) {
+      return color.replace(/\)$/, ` / ${alpha})`);
+    }
+    return `color-mix(in oklch, ${color} ${Math.round(alpha * 100)}%, transparent)`;
+  }
+
+  function build() {
+    if (!ChartCtor || !canvas) return;
+    if (chartInstance) chartInstance.destroy();
+
+    const cAi = cssVar("--c-ai") || "#22c55e";
+    const cSpy = cssVar("--c-spy") || "#6b7280";
+    const cMonkey = cssVar("--c-monkey") || "#f59e0b";
+    const cBest = cssVar("--c-best") || "#ef4444";
+    const cFg = cssVar("--fg") || "#1f2937";
+    const cFgMuted = cssVar("--fg-muted") || "#6b7280";
+    const cFgDim = cssVar("--fg-dim") || "#9ca3af";
+    const cBorder = cssVar("--border") || "#e5e7eb";
+    const cBgElev = cssVar("--bg-elev") || "#ffffff";
+
+    chartInstance = new ChartCtor(canvas!, {
+      type: "line",
+      data: {
+        labels: dates,
+        datasets: [
+          {
+            label: "Monkey 5-95% band",
+            data: monkeyP95,
+            fill: "+1",
+            backgroundColor: withAlpha(cMonkey, 0.14),
+            borderColor: withAlpha(cMonkey, 0.35),
+            borderWidth: 1,
+            pointRadius: 0,
+            tension: 0,
+          },
+          {
+            label: "p5",
+            data: monkeyP5,
+            fill: false,
+            borderColor: withAlpha(cMonkey, 0.35),
+            borderWidth: 1,
+            pointRadius: 0,
+            tension: 0,
+          },
+          {
+            label: "Monkey median",
+            data: monkeyMedian,
+            borderColor: cMonkey,
+            backgroundColor: withAlpha(cMonkey, 0.1),
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.1,
+          },
+          {
+            label: "Best monkey today",
+            data: monkeyBest,
+            borderColor: cBest,
+            borderWidth: 1.5,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            tension: 0,
+          },
+          {
+            label: "AI trader",
+            data: aiEquity,
+            borderColor: cAi,
+            backgroundColor: withAlpha(cAi, 0.12),
+            borderWidth: 3,
+            pointRadius: 0,
+            tension: 0.1,
+          },
+          {
+            label: "SPY benchmark",
+            data: spyEquity,
+            borderColor: cSpy,
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: cBgElev,
+            titleColor: cFg,
+            bodyColor: cFgMuted,
+            borderColor: cBorder,
+            borderWidth: 1,
+            padding: 10,
+            titleFont: { family: "JetBrains Mono, monospace", size: 11 },
+            bodyFont: { family: "JetBrains Mono, monospace", size: 12 },
+            callbacks: {
+              label: (ctx: any) => {
+                const v = ctx.parsed.y;
+                if (v == null) return `${ctx.dataset.label}: —`;
+                return `${ctx.dataset.label}: $${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+              },
+            },
+            filter: (item: any) => item.dataset.label !== "p5",
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { color: cBorder },
+            ticks: {
+              color: cFgDim,
+              maxTicksLimit: 8,
+              font: { family: "JetBrains Mono, monospace", size: 10 },
+            },
+          },
+          y: {
+            grid: { color: withAlpha(cBorder, 0.5), tickLength: 0 },
+            border: { display: false },
+            ticks: {
+              color: cFgDim,
+              font: { family: "JetBrains Mono, monospace", size: 10 },
+              callback: (v: any) => `$${Number(v).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
+            },
+          },
+        },
+      },
+    });
+  }
 
   $effect(() => {
     if (!canvas) return;
@@ -21,107 +162,17 @@
 
     (async () => {
       const ChartMod = await import("chart.js/auto");
-      if (cancelled || !canvas) return;
-      const Chart = (ChartMod as unknown as { default: typeof ChartMod.Chart }).default ?? ChartMod.Chart;
-      if (chartInstance) chartInstance.destroy();
-
-      chartInstance = new Chart(canvas, {
-        type: "line",
-        data: {
-          labels: dates,
-          datasets: [
-            {
-              label: "Monkey 5-95% band",
-              data: monkeyP95,
-              fill: "+1",
-              backgroundColor: "rgba(245, 158, 11, 0.12)",
-              borderColor: "rgba(245, 158, 11, 0.4)",
-              borderWidth: 1,
-              pointRadius: 0,
-              tension: 0,
-            },
-            {
-              label: "p5",
-              data: monkeyP5,
-              fill: false,
-              borderColor: "rgba(245, 158, 11, 0.4)",
-              borderWidth: 1,
-              pointRadius: 0,
-              tension: 0,
-            },
-            {
-              label: "Monkey median",
-              data: monkeyMedian,
-              borderColor: "#f59e0b",
-              backgroundColor: "rgba(245, 158, 11, 0.1)",
-              borderWidth: 2,
-              pointRadius: 0,
-              tension: 0.1,
-            },
-            {
-              label: "Best monkey today",
-              data: monkeyBest,
-              borderColor: "#ef4444",
-              borderWidth: 1.5,
-              borderDash: [4, 3],
-              pointRadius: 0,
-              tension: 0,
-            },
-            {
-              label: "AI trader",
-              data: aiEquity,
-              borderColor: "#22c55e",
-              backgroundColor: "rgba(34, 197, 94, 0.1)",
-              borderWidth: 3,
-              pointRadius: 0,
-              tension: 0.1,
-            },
-            {
-              label: "SPY benchmark",
-              data: spyEquity,
-              borderColor: "#6b7280",
-              borderWidth: 2,
-              borderDash: [6, 4],
-              pointRadius: 0,
-              tension: 0.1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: "index", intersect: false },
-          plugins: {
-            legend: {
-              labels: {
-                // Hide the auxiliary p5 dataset from the legend (it's just the band's lower edge)
-                filter: (item) => item.text !== "p5",
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => {
-                  const v = ctx.parsed.y;
-                  if (v == null) return `${ctx.dataset.label}: —`;
-                  return `${ctx.dataset.label}: $${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
-                },
-              },
-            },
-          },
-          scales: {
-            x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
-            y: {
-              ticks: {
-                callback: (v) => `$${Number(v).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
-              },
-            },
-          },
-        },
-      });
+      if (cancelled) return;
+      ChartCtor = (ChartMod as any).default ?? ChartMod.Chart;
+      build();
     })();
+
+    const onTheme = () => build();
+    window.addEventListener("mvm:theme", onTheme);
 
     return () => {
       cancelled = true;
+      window.removeEventListener("mvm:theme", onTheme);
       if (chartInstance) {
         chartInstance.destroy();
         chartInstance = null;
@@ -137,7 +188,7 @@
 <style>
   .chart-wrap {
     position: relative;
-    height: 420px;
+    height: 440px;
     width: 100%;
   }
 </style>

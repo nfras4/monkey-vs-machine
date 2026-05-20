@@ -1,11 +1,10 @@
 <script lang="ts">
-  // Lightweight inline sparkline — no Chart.js dependency. Pure SVG.
-  let { values, width = 600, height = 160, color = "#22c55e", fill = "rgba(34, 197, 94, 0.12)" }: {
+  // Lightweight inline sparkline — pure SVG, theme-aware via currentColor.
+  let { values, width = 600, height = 160, variant = "ai" }: {
     values: number[];
     width?: number;
     height?: number;
-    color?: string;
-    fill?: string;
+    variant?: "ai" | "monkey" | "spy" | "best";
   } = $props();
 
   const pad = 4;
@@ -40,17 +39,48 @@
   });
 </script>
 
-<svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="sparkline">
-  <path d={area} fill={fill} stroke="none" />
-  <path d={path} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" />
+<svg
+  class="sparkline sparkline--{variant}"
+  viewBox="0 0 {width} {height}"
+  preserveAspectRatio="xMidYMid meet"
+  role="img"
+  aria-label="sparkline"
+>
+  <path class="area" d={area} />
+  <path class="line" d={path} />
   {#if endPoint}
-    <circle cx={endPoint.x} cy={endPoint.y} r="3" fill={color} />
-    <text x={endPoint.x - 4} y={endPoint.y - 8} text-anchor="end" font-size="11" fill="#1a1a1a">
+    <circle class="dot" cx={endPoint.x} cy={endPoint.y} r="3" />
+    <text class="end-label" x={endPoint.x - 6} y={endPoint.y - 8} text-anchor="end">
       {endPoint.label}
     </text>
   {/if}
 </svg>
 
 <style>
-  svg { width: 100%; height: auto; display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .sparkline {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: var(--font-mono);
+  }
+  .sparkline--ai     { --spark: var(--c-ai); }
+  .sparkline--monkey { --spark: var(--c-monkey); }
+  .sparkline--spy    { --spark: var(--c-spy); }
+  .sparkline--best   { --spark: var(--c-best); }
+
+  .area {
+    fill: color-mix(in oklch, var(--spark) 14%, transparent);
+    stroke: none;
+  }
+  .line {
+    fill: none;
+    stroke: var(--spark);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .dot { fill: var(--spark); }
+  .end-label {
+    font-size: 11px;
+    fill: var(--fg);
+  }
 </style>

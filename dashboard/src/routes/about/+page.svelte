@@ -2,17 +2,23 @@
   // Static about page — explains what this is to first-time visitors.
 </script>
 
-<section>
-  <h2>About</h2>
+<article class="prose">
+  <p class="section-num">
+    <span class="section-num-num">05</span>
+    <span class="section-num-line"></span>
+    <span class="section-num-label">about</span>
+  </p>
 
-  <p>
+  <h1 class="title">What this is</h1>
+
+  <p class="lede">
     <strong>Monkey vs Machine</strong> is a long-running, fully simulated stock-trading
     experiment. Every US trading day, a single AI trader and an army of
     <strong>100,000 random "monkey" traders</strong> each make their next move on real
     historical S&amp;P 500 prices. The dashboard tracks all of them.
   </p>
 
-  <h3>How it works</h3>
+  <h2>How it works</h2>
   <ul>
     <li>
       Once per US trading day, a "tick" runs on a dedicated Linux box. The tick
@@ -33,7 +39,7 @@
     </li>
   </ul>
 
-  <h3>What the AI is</h3>
+  <h2>What the AI is</h2>
   <ul>
     <li>
       A scikit-learn HistGradientBoosting classifier trained on engineered price
@@ -52,7 +58,7 @@
     </li>
   </ul>
 
-  <h3>Why monkeys</h3>
+  <h2>Why monkeys</h2>
   <p>
     Markets are noisy enough that a single "AI beats the market" story is almost
     never falsifiable on a single run. A pack of 100,000 random traders gives a
@@ -62,9 +68,9 @@
     judge for yourself.
   </p>
 
-  <h3>Caveats</h3>
+  <h2>Caveats</h2>
   <ul>
-    <li><strong>Survivorship bias:</strong> the universe is the <em>current</em>
+    <li><strong>Survivorship bias.</strong> The universe is the <em>current</em>
       S&amp;P 500 fallback list. Companies that dropped out are missing.</li>
     <li><strong>No real money.</strong> The AI's picks are not placed on any
       broker. A stub interface exists for a future Alpaca-paper integration.</li>
@@ -76,19 +82,92 @@
       <code>DETERMINISM.md</code> in the repo for the contract.</li>
   </ul>
 
-  <h3>Source</h3>
+  <h2>Source</h2>
   <p>
-    Code on GitHub (link to be added). Built in Python + scikit-learn for compute,
-    Cloudflare D1 + SvelteKit for the public dashboard, systemd for the daily
-    timer.
+    Code on <a href="https://github.com/nfras4/monkey-vs-machine" target="_blank" rel="noreferrer">GitHub ↗</a>.
+    Built in Python + scikit-learn for compute, Cloudflare D1 + SvelteKit for
+    the public dashboard, systemd for the daily timer.
   </p>
-</section>
+</article>
 
 <style>
-  section { max-width: 720px; }
-  h2 { font-size: 22px; margin-bottom: 12px; }
-  h3 { font-size: 16px; margin-top: 28px; margin-bottom: 8px; color: #1f2937; }
-  p, li { font-size: 15px; line-height: 1.6; color: #1f2937; }
-  ul { padding-left: 22px; }
-  code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+  .prose {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0 0 28px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .section-num-num { color: var(--accent); font-weight: 500; }
+  .section-num-line {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 1px;
+    background: var(--fg-dim);
+    transform: translateY(-3px);
+  }
+  .section-num-label { color: var(--fg-dim); }
+
+  .title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 4.5vw, 48px);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    margin: 0 0 32px;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: clamp(17px, 2vw, 19px);
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0 0 40px;
+    text-wrap: pretty;
+  }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    margin: 48px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  p, li {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--fg-muted);
+    text-wrap: pretty;
+  }
+
+  p { margin: 0 0 16px; }
+  ul { padding-left: 0; list-style: none; margin: 0 0 16px; }
+  li {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  li::before {
+    content: "→";
+    color: var(--accent);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  strong { color: var(--fg); font-weight: 500; }
+  em { color: var(--fg); font-style: italic; }
+  a { color: var(--accent); transition: color 0.15s ease; }
+  a:hover { color: var(--fg); }
 </style>

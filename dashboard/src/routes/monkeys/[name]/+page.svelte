@@ -14,53 +14,170 @@
 </script>
 
 <section class="hero">
-  <p class="back"><a href="/monkeys">← all named monkeys</a></p>
-  <h2>{data.name} <span class="meta">· monkey #{monkeyId ?? "?"} · category: {category}</span></h2>
+  <p class="back">
+    <a href="/monkeys">← all named monkeys</a>
+  </p>
+
+  <h1 class="name">
+    {data.name}
+    <span class="meta">monkey #{monkeyId ?? "?"} · {category}</span>
+  </h1>
+
   <div class="numbers">
     <span class="latest">{fmt(end)}</span>
     <span class="delta" class:up={pctChange >= 0} class:down={pctChange < 0}>
       {pctChange >= 0 ? "▲" : "▼"} {Math.abs(pctChange).toFixed(2)}%
-      since {data.history[0]?.date ?? "—"}
+      <span class="since">since {data.history[0]?.date ?? "—"}</span>
     </span>
   </div>
 </section>
 
 {#if values.length > 0}
-  <Sparkline {values} height={180} />
+  <div class="spark-frame">
+    <Sparkline {values} height={180} variant="monkey" />
+  </div>
 {/if}
 
 <details class="raw">
-  <summary>Full history ({data.history.length} rows)</summary>
-  <table>
-    <thead><tr><th>Date</th><th>Equity</th><th>Category that day</th></tr></thead>
-    <tbody>
-      {#each [...data.history].reverse() as h}
-        <tr><td>{h.date}</td><td>{fmt(h.equity)}</td><td>{h.category}</td></tr>
-      {/each}
-    </tbody>
-  </table>
+  <summary>Full history <span class="muted">({data.history.length} rows)</span></summary>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="left">Date</th>
+          <th>Equity</th>
+          <th class="left">Category that day</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each [...data.history].reverse() as h}
+          <tr>
+            <td class="left date">{h.date}</td>
+            <td>{fmt(h.equity)}</td>
+            <td class="left muted">{h.category}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 </details>
 
 <style>
-  .hero { margin-bottom: 16px; }
-  .back { font-size: 13px; margin: 0 0 6px; }
-  .back a { color: #6b7280; text-decoration: none; }
-  .back a:hover { color: #1f2937; text-decoration: underline; }
-  h2 { margin: 0 0 8px; font-size: 22px; }
-  .meta { color: #6b7280; font-weight: 400; font-size: 14px; }
-  .numbers { display: flex; gap: 18px; align-items: baseline; }
-  .latest {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 28px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+  .hero { margin-bottom: 24px; }
+  .back {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin: 0 0 14px;
+    letter-spacing: 0.02em;
   }
-  .delta { font-size: 14px; font-variant-numeric: tabular-nums; }
-  .delta.up { color: #047857; }
-  .delta.down { color: #b91c1c; }
-  details.raw { margin-top: 24px; }
-  details.raw summary { cursor: pointer; color: #6b7280; font-size: 13px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
-  th, td { padding: 6px 10px; border-bottom: 1px solid #e5e7eb; text-align: right; }
-  th:first-child, td:first-child { text-align: left; }
+  .back a {
+    color: var(--fg-muted);
+    transition: color 0.15s ease;
+  }
+  .back a:hover { color: var(--accent); }
+
+  .name {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 3.6vw, 38px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+    line-height: 1.1;
+  }
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-left: 12px;
+    letter-spacing: 0.04em;
+    font-weight: 400;
+  }
+
+  .numbers {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  .latest {
+    font-family: var(--font-mono);
+    font-size: clamp(24px, 3vw, 30px);
+    font-weight: 500;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  .delta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .delta.up { color: var(--c-up); }
+  .delta.down { color: var(--c-down); }
+  .since {
+    color: var(--fg-dim);
+    margin-left: 6px;
+  }
+
+  .spark-frame {
+    margin: 24px 0 32px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px;
+  }
+
+  .raw {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .raw summary {
+    cursor: pointer;
+    color: var(--fg-muted);
+    padding: 8px 0;
+    letter-spacing: 0.02em;
+    transition: color 0.15s ease;
+    user-select: none;
+  }
+  .raw summary:hover { color: var(--fg); }
+  .raw summary :global(.muted) { color: var(--fg-dim); }
+
+  .table-wrap {
+    margin-top: 12px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .data-table th {
+    font-weight: 500;
+    text-align: right;
+    padding: 12px 14px;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+  .data-table th.left { text-align: left; }
+  .data-table td {
+    padding: 10px 14px;
+    text-align: right;
+    color: var(--fg-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td.left { text-align: left; }
+  .data-table td.date { color: var(--fg-dim); }
+  .data-table td.muted { color: var(--fg-dim); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover td { background: var(--bg-card); }
 </style>
