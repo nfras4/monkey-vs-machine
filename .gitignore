@@ -19,4 +19,5 @@ data/*.log
 .ipynb_checkpoints/
 /etc/openclaw/
 .omc/state/
+**/.omc/state/
 .pytest_cache/
