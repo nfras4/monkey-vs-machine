@@ -23,6 +23,10 @@ interface IngestPayload {
   ai_equity: Record<string, unknown>[];
   named_monkey_history: Record<string, unknown>[];
   tick: Record<string, unknown> | null;
+  // v2: 8-monkey personality cast + frozen external events.
+  // external_events is the FULL frozen table from genesis — INSERT OR IGNORE
+  // on the receive side keeps it idempotent and cheap (247 rows for Lakers).
+  external_events?: Record<string, unknown>[];
 }
 
 function constantTimeEqual(a: string, b: string): boolean {
@@ -127,8 +131,27 @@ export const POST: RequestHandler = async ({ request, platform }) => {
   for (const r of payload.named_monkey_history) {
     stmts.push(
       env.DB.prepare(
-        "INSERT OR REPLACE INTO named_monkey_history (date, name, monkey_id, category, equity) VALUES (?, ?, ?, ?, ?)",
-      ).bind(r.date, r.name, r.monkey_id, r.category, r.equity),
+        `INSERT OR REPLACE INTO named_monkey_history
+         (date, name, monkey_id, category, equity, personality_config)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+      ).bind(
+        r.date, r.name, r.monkey_id, r.category, r.equity,
+        // v2: personality_config is denormalised onto each history row so
+        // /monkeys can render character cards without a second table fetch.
+        (r.personality_config as string | null | undefined) ?? null,
+      ),
+    );
+  }
+
+  // v2: frozen external_events (Lakers results etc.). Always idempotent —
+  // INSERT OR IGNORE preserves the first-write-wins genesis fingerprint.
+  for (const r of payload.external_events ?? []) {
+    stmts.push(
+      env.DB.prepare(
+        `INSERT OR IGNORE INTO external_events
+         (date, event_kind, outcome, payload_json)
+         VALUES (?, ?, ?, ?)`,
+      ).bind(r.date, r.event_kind, r.outcome, (r.payload_json as string | null | undefined) ?? null),
     );
   }
 

@@ -37,7 +37,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from mvm.state.db import DEFAULT_DB_PATH, get_conn  # noqa: E402
 
-PUBLISH_SCHEMA_VERSION = 1
+PUBLISH_SCHEMA_VERSION = 2
 
 
 def build_payload(conn, date: str) -> dict:
@@ -53,10 +53,28 @@ def build_payload(conn, date: str) -> dict:
     ai_equity = conn.execute(
         "SELECT * FROM ai_portfolio_equity WHERE date=?", (date,)
     ).fetchall()
+    # v2: JOIN named_monkeys to attach each row's personality_config so the
+    # dashboard can render character cards without a second table on D1.
     named = conn.execute(
-        "SELECT * FROM named_monkey_history WHERE date=?", (date,)
+        """
+        SELECT h.date, h.name, h.monkey_id, h.category, h.equity,
+               m.personality_config
+        FROM named_monkey_history h
+        LEFT JOIN named_monkeys m ON m.name = h.name
+        WHERE h.date = ?
+        """,
+        (date,),
     ).fetchall()
     tick = conn.execute("SELECT * FROM ticks WHERE date=?", (date,)).fetchone()
+
+    # v2: ship the full frozen external_events table on every push. INSERT OR
+    # IGNORE on the receive side means duplicates are no-ops; the 247-row
+    # Lakers fixture is well within D1 batch limits and the wire cost is small
+    # (~30KB compressed). Genesis fingerprint guarantees content immutability.
+    external_events = conn.execute(
+        "SELECT date, event_kind, outcome, payload_json FROM external_events "
+        "ORDER BY date, event_kind"
+    ).fetchall()
 
     return {
         "publish_schema_version": PUBLISH_SCHEMA_VERSION,
@@ -67,6 +85,7 @@ def build_payload(conn, date: str) -> dict:
         "ai_equity": [dict(r) for r in ai_equity],
         "named_monkey_history": [dict(r) for r in named],
         "tick": dict(tick) if tick else None,
+        "external_events": [dict(r) for r in external_events],
     }
 
 
