@@ -1,5 +1,6 @@
 <script lang="ts">
   import EquityChart from "$lib/components/EquityChart.svelte";
+  import SplitPanel from "$lib/components/SplitPanel.svelte";
 
   let { data } = $props();
   const fmt = (n: number | null | undefined) =>
@@ -110,24 +111,67 @@
 </section>
 
 <section class="chart-section">
-  <header class="chart-head">
-    <h2 class="chart-title">Equity curves</h2>
-    <p class="chart-sub">$10,000 starting cash · 5bp transaction cost · real S&amp;P 500 bars</p>
-  </header>
   {#if data.aiEquity.length === 0}
+    <header class="chart-head">
+      <h2 class="chart-title">Equity curves</h2>
+    </header>
     <p class="empty">
-      No ticks yet. Run <code>scripts/bootstrap_genesis.py</code> + <code>scripts/run_tick.py</code> on openclaw, then push.
+      No ticks yet. Run <code>scripts/bootstrap_genesis.py</code> + <code>scripts/run_tick.py</code>, then push.
     </p>
   {:else}
-    <div class="chart-frame">
-      <EquityChart {dates} {aiEquity} {spyEquity} {monkeyMedian} {monkeyP5} {monkeyP95} {monkeyBest} />
-    </div>
-    <ul class="legend">
-      <li><span class="swatch sw-ai"></span> AI trader</li>
-      <li><span class="swatch sw-spy"></span> SPY benchmark</li>
-      <li><span class="swatch sw-monkey"></span> Monkey median &amp; 5–95% band</li>
-      <li><span class="swatch sw-best"></span> Best monkey today</li>
-    </ul>
+    <SplitPanel
+      title="Equity curves"
+      sub="$10,000 starting cash · 5bp transaction cost · real S&P 500 bars"
+    >
+      {#snippet left()}
+        <article class="chart-card">
+          <header class="chart-card-head">
+            <h3 class="chart-card-title">AI vs SPY</h3>
+            <ul class="legend legend--inline">
+              <li><span class="swatch sw-ai"></span> AI trader</li>
+              <li><span class="swatch sw-spy"></span> SPY benchmark</li>
+            </ul>
+          </header>
+          <div class="chart-frame">
+            <EquityChart
+              {dates}
+              {aiEquity}
+              {spyEquity}
+              {monkeyMedian}
+              {monkeyP5}
+              {monkeyP95}
+              {monkeyBest}
+              variant="ai-vs-spy"
+              height="340px"
+            />
+          </div>
+        </article>
+      {/snippet}
+      {#snippet right()}
+        <article class="chart-card">
+          <header class="chart-card-head">
+            <h3 class="chart-card-title">Monkey distribution</h3>
+            <ul class="legend legend--inline">
+              <li><span class="swatch sw-monkey"></span> Median &amp; 5–95% band</li>
+              <li><span class="swatch sw-best"></span> Best today</li>
+            </ul>
+          </header>
+          <div class="chart-frame">
+            <EquityChart
+              {dates}
+              {aiEquity}
+              {spyEquity}
+              {monkeyMedian}
+              {monkeyP5}
+              {monkeyP95}
+              {monkeyBest}
+              variant="monkey-band"
+              height="340px"
+            />
+          </div>
+        </article>
+      {/snippet}
+    </SplitPanel>
   {/if}
 </section>
 
@@ -288,12 +332,24 @@
     font-weight: 500;
     margin: 0 0 4px;
   }
-  .chart-sub {
+
+  /* Each panel inside the split */
+  .chart-card { display: flex; flex-direction: column; gap: 12px; }
+  .chart-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .chart-card-title {
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--fg-muted);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
     margin: 0;
-    letter-spacing: 0.02em;
+    font-weight: 500;
   }
 
   .chart-frame {
@@ -305,16 +361,17 @@
 
   .legend {
     list-style: none;
-    margin: 16px 0 0;
+    margin: 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 22px;
+    gap: 8px 18px;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.04em;
     color: var(--fg-muted);
   }
+  .legend--inline { margin: 0; }
   .legend li { display: inline-flex; align-items: center; gap: 8px; }
   .swatch {
     display: inline-block;

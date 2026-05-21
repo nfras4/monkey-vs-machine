@@ -35,7 +35,14 @@ export type AiHistoryRow = {
 
 export type AiPortfolioRow = { date: string; ticker: string; model_id: string; weight: number };
 export type AiEquityRow = { date: string; model_id: string; equity: number; daily_return: number | null };
-export type NamedMonkeyRow = { date: string; name: string; monkey_id: number; category: string; equity: number };
+export type NamedMonkeyRow = {
+  date: string;
+  name: string;
+  monkey_id: number;
+  category: string;
+  equity: number;
+  personality_config: string | null;
+};
 export type TickRow = { date: string; status: string; duration_seconds: number | null; note: string | null; pushed_at: string };
 
 export async function getRecentAggregates(db: D1Database, days = 365): Promise<AggregateRow[]> {
@@ -92,6 +99,32 @@ export async function getNamedMonkeys(db: D1Database): Promise<NamedMonkeyRow[]>
     .bind(latest.d)
     .all<NamedMonkeyRow>();
   return results ?? [];
+}
+
+/** Last N trading dates of named-monkey history, grouped by name. One DB
+ *  subrequest. Used by /monkeys to render sparklines per character card. */
+export async function getRecentNamedMonkeyHistory(
+  db: D1Database,
+  days = 21,
+): Promise<Record<string, NamedMonkeyRow[]>> {
+  // Pull rows from the last `days` distinct dates. Subquery avoids needing
+  // to compute the cutoff date in TS (handles weekends/holidays correctly).
+  const { results } = await db
+    .prepare(
+      `SELECT * FROM named_monkey_history
+       WHERE date IN (
+         SELECT date FROM named_monkey_history
+         GROUP BY date ORDER BY date DESC LIMIT ?
+       )
+       ORDER BY name, date`,
+    )
+    .bind(days)
+    .all<NamedMonkeyRow>();
+  const grouped: Record<string, NamedMonkeyRow[]> = {};
+  for (const r of results ?? []) {
+    (grouped[r.name] ??= []).push(r);
+  }
+  return grouped;
 }
 
 export async function getNamedMonkeyHistory(db: D1Database, name: string): Promise<NamedMonkeyRow[]> {

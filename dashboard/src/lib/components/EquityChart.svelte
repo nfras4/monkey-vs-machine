@@ -2,7 +2,17 @@
   // Chart.js race chart — AI vs SPY vs monkey median (with 5-95 band).
   // Colors are pulled from CSS custom properties so the chart matches the
   // active theme; rebuilds on `mvm:theme` events.
-  let { dates, aiEquity, spyEquity, monkeyMedian, monkeyP5, monkeyP95, monkeyBest }: {
+  let {
+    dates,
+    aiEquity,
+    spyEquity,
+    monkeyMedian,
+    monkeyP5,
+    monkeyP95,
+    monkeyBest,
+    variant = "all",
+    height = "440px",
+  }: {
     dates: string[];
     aiEquity: (number | null)[];
     spyEquity: (number | null)[];
@@ -10,6 +20,11 @@
     monkeyP5: number[];
     monkeyP95: number[];
     monkeyBest: number[];
+    // "all"        — every series (default; preserves pre-split behaviour)
+    // "ai-vs-spy"  — only AI + SPY (the head-to-head head-to-bench race)
+    // "monkey-band"— only monkey p5/p95 band + median + best (the pack distribution)
+    variant?: "all" | "ai-vs-spy" | "monkey-band";
+    height?: string;
   } = $props();
 
   let canvas: HTMLCanvasElement | undefined = $state();
@@ -45,68 +60,76 @@
     const cBorder = cssVar("--border") || "#e5e7eb";
     const cBgElev = cssVar("--bg-elev") || "#ffffff";
 
+    const monkeyDatasets = [
+      {
+        label: "Monkey 5-95% band",
+        data: monkeyP95,
+        fill: "+1",
+        backgroundColor: withAlpha(cMonkey, 0.14),
+        borderColor: withAlpha(cMonkey, 0.35),
+        borderWidth: 1,
+        pointRadius: 0,
+        tension: 0,
+      },
+      {
+        label: "p5",
+        data: monkeyP5,
+        fill: false,
+        borderColor: withAlpha(cMonkey, 0.35),
+        borderWidth: 1,
+        pointRadius: 0,
+        tension: 0,
+      },
+      {
+        label: "Monkey median",
+        data: monkeyMedian,
+        borderColor: cMonkey,
+        backgroundColor: withAlpha(cMonkey, 0.1),
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.1,
+      },
+      {
+        label: "Best monkey today",
+        data: monkeyBest,
+        borderColor: cBest,
+        borderWidth: 1.5,
+        borderDash: [4, 3],
+        pointRadius: 0,
+        tension: 0,
+      },
+    ];
+    const aiSpyDatasets = [
+      {
+        label: "AI trader",
+        data: aiEquity,
+        borderColor: cAi,
+        backgroundColor: withAlpha(cAi, 0.12),
+        borderWidth: 3,
+        pointRadius: 0,
+        tension: 0.1,
+      },
+      {
+        label: "SPY benchmark",
+        data: spyEquity,
+        borderColor: cSpy,
+        borderWidth: 2,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        tension: 0.1,
+      },
+    ];
+
+    const datasets =
+      variant === "ai-vs-spy"
+        ? aiSpyDatasets
+        : variant === "monkey-band"
+          ? monkeyDatasets
+          : [...monkeyDatasets, ...aiSpyDatasets];
+
     chartInstance = new ChartCtor(canvas!, {
       type: "line",
-      data: {
-        labels: dates,
-        datasets: [
-          {
-            label: "Monkey 5-95% band",
-            data: monkeyP95,
-            fill: "+1",
-            backgroundColor: withAlpha(cMonkey, 0.14),
-            borderColor: withAlpha(cMonkey, 0.35),
-            borderWidth: 1,
-            pointRadius: 0,
-            tension: 0,
-          },
-          {
-            label: "p5",
-            data: monkeyP5,
-            fill: false,
-            borderColor: withAlpha(cMonkey, 0.35),
-            borderWidth: 1,
-            pointRadius: 0,
-            tension: 0,
-          },
-          {
-            label: "Monkey median",
-            data: monkeyMedian,
-            borderColor: cMonkey,
-            backgroundColor: withAlpha(cMonkey, 0.1),
-            borderWidth: 2,
-            pointRadius: 0,
-            tension: 0.1,
-          },
-          {
-            label: "Best monkey today",
-            data: monkeyBest,
-            borderColor: cBest,
-            borderWidth: 1.5,
-            borderDash: [4, 3],
-            pointRadius: 0,
-            tension: 0,
-          },
-          {
-            label: "AI trader",
-            data: aiEquity,
-            borderColor: cAi,
-            backgroundColor: withAlpha(cAi, 0.12),
-            borderWidth: 3,
-            pointRadius: 0,
-            tension: 0.1,
-          },
-          {
-            label: "SPY benchmark",
-            data: spyEquity,
-            borderColor: cSpy,
-            borderWidth: 2,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            tension: 0.1,
-          },
-        ],
-      },
+      data: { labels: dates, datasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -181,14 +204,13 @@
   });
 </script>
 
-<div class="chart-wrap">
+<div class="chart-wrap" style="height: {height};">
   <canvas bind:this={canvas} aria-label="Equity curve: AI trader vs SPY benchmark vs monkey median and percentile band"></canvas>
 </div>
 
 <style>
   .chart-wrap {
     position: relative;
-    height: 440px;
     width: 100%;
   }
 </style>
