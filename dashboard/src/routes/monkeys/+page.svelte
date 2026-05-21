@@ -45,13 +45,18 @@
   }
 
   // Pre-compute card view-models so the template stays clean.
+  // pct is `null` when we have <2 history points — showing "▲ 0.00%" green
+  // would be a false-positive signal on a brand-new cast.
   const cards = $derived(
     data.named.map((m) => {
       const history = data.recent[m.name] ?? [];
       const values = history.map((h) => h.equity);
-      const start = values[0] ?? m.equity;
-      const end = values[values.length - 1] ?? m.equity;
-      const pct = start ? ((end - start) / start) * 100 : 0;
+      let pct: number | null = null;
+      if (values.length >= 2) {
+        const start = values[0];
+        const end = values[values.length - 1];
+        if (start) pct = ((end - start) / start) * 100;
+      }
       const { tagline, variant } = describe(m.name, m.category, m.personality_config);
       return {
         name: m.name,
@@ -94,9 +99,13 @@
         <a class="card" href={`/monkeys/${c.name}`}>
           <header class="card-head">
             <span class="card-name">{c.name}</span>
-            <span class="card-delta" class:up={c.pct >= 0} class:down={c.pct < 0}>
-              {c.pct >= 0 ? "▲" : "▼"} {Math.abs(c.pct).toFixed(2)}%
-            </span>
+            {#if c.pct == null}
+              <span class="card-delta neutral">— new</span>
+            {:else}
+              <span class="card-delta" class:up={c.pct >= 0} class:down={c.pct < 0}>
+                {c.pct >= 0 ? "▲" : "▼"} {Math.abs(c.pct).toFixed(2)}%
+              </span>
+            {/if}
           </header>
           <p class="card-tagline">{c.tagline}</p>
           <div class="card-spark">
@@ -258,6 +267,7 @@
   }
   .card-delta.up { color: var(--c-up); }
   .card-delta.down { color: var(--c-down); }
+  .card-delta.neutral { color: var(--fg-dim); letter-spacing: 0.04em; }
 
   .card-tagline {
     font-family: var(--font-mono);

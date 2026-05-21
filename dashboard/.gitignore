@@ -4,3 +4,6 @@ build/
 .env
 .vercel/
 .wrangler/
+
+# Playwright snapshot output — regenerable per design pass
+tests/visual/output/
