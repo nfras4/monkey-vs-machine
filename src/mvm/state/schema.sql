@@ -12,6 +12,12 @@ CREATE TABLE IF NOT EXISTS genesis_log (
     personality_monkey_ids_json TEXT NOT NULL,
     spy_anchor_date TEXT,        -- latest SPY-trading date <= start_date
     spy_anchor_close REAL,       -- SPY close on that anchor; used to compute spy_equity each tick
+    -- v3 personality cast: fingerprint of frozen external_events; null on legacy/empty
+    external_events_fingerprint TEXT,
+    -- v3 personality cast: bumped by deterministic-boundary migrations + rebases
+    cast_version INTEGER NOT NULL DEFAULT 1,
+    -- v3 personality cast: snapshot the whole cast config at genesis for bit-identical reruns
+    personality_config_json TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -99,11 +105,14 @@ CREATE TABLE IF NOT EXISTS daily_aggregates (
     spy_equity REAL
 );
 
--- Named monkeys: 3 personality (fixed at genesis) + top3 + bottom3 + today_mover (refreshed every tick)
+-- Named monkeys: 8 personality (fixed at genesis, each with a deterministic
+-- quirk in personality_config) + top3 + bottom3 + today_mover (daily-refreshed).
+-- personality_config is JSON parsed into typed Personality dataclasses at tick start.
 CREATE TABLE IF NOT EXISTS named_monkeys (
     name TEXT PRIMARY KEY,
     monkey_id INTEGER NOT NULL,
     category TEXT NOT NULL,
+    personality_config TEXT,
     pinned_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -124,6 +133,32 @@ CREATE TABLE IF NOT EXISTS ticks (
     finished_at TEXT,
     duration_seconds REAL,
     note TEXT
+);
+
+-- Frozen external events seeded at genesis (NBA results, calendar credits,
+-- anything date-keyed that informs personality monkey post-tick equity).
+-- Mutating this table after genesis without re-running rebase_external_events.py
+-- violates the determinism contract; runner_tick.py refuses to proceed on mismatch.
+CREATE TABLE IF NOT EXISTS external_events (
+    date TEXT NOT NULL,
+    event_kind TEXT NOT NULL,
+    outcome INTEGER NOT NULL,
+    payload_json TEXT,
+    PRIMARY KEY (date, event_kind)
+);
+CREATE INDEX IF NOT EXISTS idx_external_events_kind_date ON external_events(event_kind, date);
+
+-- Audit trail for sanctioned external_events rebases. Every row corresponds to
+-- one invocation of scripts/rebase_external_events.py and captures the old/new
+-- fingerprint plus the human-supplied --reason.
+CREATE TABLE IF NOT EXISTS external_events_rebase_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rebased_at TEXT NOT NULL DEFAULT (datetime('now')),
+    old_fingerprint TEXT,
+    new_fingerprint TEXT NOT NULL,
+    rows_added INTEGER NOT NULL DEFAULT 0,
+    rows_removed INTEGER NOT NULL DEFAULT 0,
+    reason TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS d1_egress_log (

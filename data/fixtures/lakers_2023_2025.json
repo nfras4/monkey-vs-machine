@@ -1,0 +1,2472 @@
+[
+  {
+    "date": "2023-10-24",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "107-119",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-10-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "100-95",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-10-29",
+    "outcome": 0,
+    "payload": {
+      "opp": "SAC",
+      "score": "127-132",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-10-30",
+    "outcome": 1,
+    "payload": {
+      "opp": "ORL",
+      "score": "106-103",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "130-125",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-04",
+    "outcome": 0,
+    "payload": {
+      "opp": "ORL",
+      "score": "101-120",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-06",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIA",
+      "score": "107-108",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-08",
+    "outcome": 0,
+    "payload": {
+      "opp": "HOU",
+      "score": "94-128",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "122-119",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-12",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "116-110",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "134-107",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-15",
+    "outcome": 0,
+    "payload": {
+      "opp": "SAC",
+      "score": "110-125",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-17",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "107-95",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-19",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "105-104",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-21",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "131-99",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-22",
+    "outcome": 0,
+    "payload": {
+      "opp": "DAL",
+      "score": "101-104",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "CLE",
+      "score": "121-115",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-27",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHI",
+      "score": "94-138",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-29",
+    "outcome": 1,
+    "payload": {
+      "opp": "DET",
+      "score": "133-107",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-11-30",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "110-133",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "107-97",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-05",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "106-103",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-07",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "133-89",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-09",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "123-109",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-12",
+    "outcome": 0,
+    "payload": {
+      "opp": "DAL",
+      "score": "125-127",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-13",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "122-119",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-15",
+    "outcome": 0,
+    "payload": {
+      "opp": "SA",
+      "score": "115-129",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-18",
+    "outcome": 0,
+    "payload": {
+      "opp": "NY",
+      "score": "109-114",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-20",
+    "outcome": 0,
+    "payload": {
+      "opp": "CHI",
+      "score": "108-124",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-21",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIN",
+      "score": "111-118",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-23",
+    "outcome": 1,
+    "payload": {
+      "opp": "OKC",
+      "score": "129-120",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-25",
+    "outcome": 0,
+    "payload": {
+      "opp": "BOS",
+      "score": "115-126",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHA",
+      "score": "133-112",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-30",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIN",
+      "score": "106-108",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2023-12-31",
+    "outcome": 0,
+    "payload": {
+      "opp": "NO",
+      "score": "109-129",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-03",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIA",
+      "score": "96-110",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-05",
+    "outcome": 0,
+    "payload": {
+      "opp": "MEM",
+      "score": "113-127",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-07",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "106-103",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-09",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "132-131",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-11",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "109-127",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "UTAH",
+      "score": "125-132",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-15",
+    "outcome": 1,
+    "payload": {
+      "opp": "OKC",
+      "score": "112-105",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-17",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "127-110",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-19",
+    "outcome": 0,
+    "payload": {
+      "opp": "BKN",
+      "score": "112-130",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-21",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "134-110",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-23",
+    "outcome": 0,
+    "payload": {
+      "opp": "LAC",
+      "score": "116-127",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHI",
+      "score": "141-132",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "145-144",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-29",
+    "outcome": 0,
+    "payload": {
+      "opp": "HOU",
+      "score": "119-135",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-01-30",
+    "outcome": 0,
+    "payload": {
+      "opp": "ATL",
+      "score": "122-138",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "BOS",
+      "score": "114-105",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "NY",
+      "score": "113-105",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-05",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHA",
+      "score": "124-118",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-08",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "106-114",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-09",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "139-122",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-13",
+    "outcome": 1,
+    "payload": {
+      "opp": "DET",
+      "score": "125-111",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "138-122",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-22",
+    "outcome": 0,
+    "payload": {
+      "opp": "GS",
+      "score": "110-128",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-23",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "123-118",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-25",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "113-123",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "116-112",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-02-29",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "134-131",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-02",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "114-124",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "OKC",
+      "score": "116-104",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-06",
+    "outcome": 0,
+    "payload": {
+      "opp": "SAC",
+      "score": "120-130",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-08",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIL",
+      "score": "123-122",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "120-109",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "SAC",
+      "score": "107-120",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-16",
+    "outcome": 0,
+    "payload": {
+      "opp": "GS",
+      "score": "121-128",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-18",
+    "outcome": 1,
+    "payload": {
+      "opp": "ATL",
+      "score": "136-105",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-22",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHI",
+      "score": "101-94",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-24",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "150-145",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIL",
+      "score": "128-124",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "136-124",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-29",
+    "outcome": 0,
+    "payload": {
+      "opp": "IND",
+      "score": "90-109",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-03-31",
+    "outcome": 1,
+    "payload": {
+      "opp": "BKN",
+      "score": "116-104",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "128-111",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "125-120",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "CLE",
+      "score": "116-97",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-07",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIN",
+      "score": "117-127",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-09",
+    "outcome": 0,
+    "payload": {
+      "opp": "GS",
+      "score": "120-134",
+      "home": true,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-12",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "123-120",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-04-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "124-108",
+      "home": false,
+      "season": 2024
+    }
+  },
+  {
+    "date": "2024-10-22",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "110-103",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-10-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "123-116",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-10-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "131-127",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-10-28",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "105-109",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-10-30",
+    "outcome": 0,
+    "payload": {
+      "opp": "CLE",
+      "score": "110-134",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "131-125",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-04",
+    "outcome": 0,
+    "payload": {
+      "opp": "DET",
+      "score": "103-115",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-06",
+    "outcome": 0,
+    "payload": {
+      "opp": "MEM",
+      "score": "114-131",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-08",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHI",
+      "score": "116-106",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "123-103",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-13",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "128-123",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-15",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "120-115",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-16",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "104-99",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-19",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "124-118",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-21",
+    "outcome": 0,
+    "payload": {
+      "opp": "ORL",
+      "score": "118-119",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-23",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "102-127",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-26",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "100-127",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "119-101",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-11-29",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "93-101",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "105-104",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-02",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIN",
+      "score": "80-109",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-04",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIA",
+      "score": "93-134",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-06",
+    "outcome": 0,
+    "payload": {
+      "opp": "ATL",
+      "score": "132-134",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-08",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "107-98",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIN",
+      "score": "87-97",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-15",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "116-110",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-19",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "113-100",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-21",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "103-99",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-23",
+    "outcome": 0,
+    "payload": {
+      "opp": "DET",
+      "score": "114-117",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "115-113",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "132-122",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2024-12-31",
+    "outcome": 0,
+    "payload": {
+      "opp": "CLE",
+      "score": "110-122",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "114-106",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "ATL",
+      "score": "119-102",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-05",
+    "outcome": 0,
+    "payload": {
+      "opp": "HOU",
+      "score": "115-119",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-07",
+    "outcome": 0,
+    "payload": {
+      "opp": "DAL",
+      "score": "97-118",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "SA",
+      "score": "102-126",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-15",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIA",
+      "score": "117-108",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-17",
+    "outcome": 1,
+    "payload": {
+      "opp": "BKN",
+      "score": "102-101",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-19",
+    "outcome": 0,
+    "payload": {
+      "opp": "LAC",
+      "score": "102-116",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-21",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "111-88",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-23",
+    "outcome": 1,
+    "payload": {
+      "opp": "BOS",
+      "score": "117-96",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "118-108",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHA",
+      "score": "112-107",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-28",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHI",
+      "score": "104-118",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-01-30",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "134-96",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "NY",
+      "score": "128-112",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "122-97",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "120-112",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-08",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "124-117",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "132-113",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-12",
+    "outcome": 0,
+    "payload": {
+      "opp": "UTAH",
+      "score": "119-131",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-19",
+    "outcome": 0,
+    "payload": {
+      "opp": "CHA",
+      "score": "97-100",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-20",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "110-102",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-22",
+    "outcome": 1,
+    "payload": {
+      "opp": "DEN",
+      "score": "123-100",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "107-99",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "111-102",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-02-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "106-102",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "108-102",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "136-115",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "NY",
+      "score": "113-109",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-08",
+    "outcome": 0,
+    "payload": {
+      "opp": "BOS",
+      "score": "101-111",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-10",
+    "outcome": 0,
+    "payload": {
+      "opp": "BKN",
+      "score": "108-111",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIL",
+      "score": "106-126",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-14",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "126-131",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-16",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "107-96",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-17",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "125-109",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-19",
+    "outcome": 1,
+    "payload": {
+      "opp": "DEN",
+      "score": "120-108",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-20",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIL",
+      "score": "89-118",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-22",
+    "outcome": 0,
+    "payload": {
+      "opp": "CHI",
+      "score": "115-146",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-24",
+    "outcome": 0,
+    "payload": {
+      "opp": "ORL",
+      "score": "106-118",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "120-119",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-27",
+    "outcome": 0,
+    "payload": {
+      "opp": "CHI",
+      "score": "117-119",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-29",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "134-127",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-03-31",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "104-98",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-03",
+    "outcome": 0,
+    "payload": {
+      "opp": "GS",
+      "score": "116-123",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "124-108",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "OKC",
+      "score": "126-99",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-08",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "120-136",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-09",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "112-97",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-11",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "140-109",
+      "home": true,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-04-13",
+    "outcome": 0,
+    "payload": {
+      "opp": "POR",
+      "score": "81-109",
+      "home": false,
+      "season": 2025
+    }
+  },
+  {
+    "date": "2025-10-21",
+    "outcome": 0,
+    "payload": {
+      "opp": "GS",
+      "score": "109-119",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-10-24",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "128-110",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-10-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "127-120",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-10-27",
+    "outcome": 0,
+    "payload": {
+      "opp": "POR",
+      "score": "108-122",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-10-29",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "116-115",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-10-31",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "117-112",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIA",
+      "score": "130-120",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "POR",
+      "score": "123-115",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-05",
+    "outcome": 1,
+    "payload": {
+      "opp": "SA",
+      "score": "118-116",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-08",
+    "outcome": 0,
+    "payload": {
+      "opp": "ATL",
+      "score": "102-122",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHA",
+      "score": "121-111",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-12",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "92-121",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "118-104",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-15",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIL",
+      "score": "119-95",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-18",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "140-126",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-23",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "108-106",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "135-118",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "129-119",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-11-30",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "133-121",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-01",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "108-125",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "123-120",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-05",
+    "outcome": 0,
+    "payload": {
+      "opp": "BOS",
+      "score": "105-126",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-07",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHI",
+      "score": "112-108",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-10",
+    "outcome": 0,
+    "payload": {
+      "opp": "SA",
+      "score": "119-132",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "116-114",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-18",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "143-135",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-20",
+    "outcome": 0,
+    "payload": {
+      "opp": "LAC",
+      "score": "88-103",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-23",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "108-132",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-25",
+    "outcome": 0,
+    "payload": {
+      "opp": "HOU",
+      "score": "96-119",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "125-101",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2025-12-30",
+    "outcome": 0,
+    "payload": {
+      "opp": "DET",
+      "score": "106-128",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-02",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "128-121",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-04",
+    "outcome": 1,
+    "payload": {
+      "opp": "MEM",
+      "score": "120-114",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "111-103",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-07",
+    "outcome": 0,
+    "payload": {
+      "opp": "SA",
+      "score": "91-107",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-09",
+    "outcome": 0,
+    "payload": {
+      "opp": "MIL",
+      "score": "101-105",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-12",
+    "outcome": 0,
+    "payload": {
+      "opp": "SAC",
+      "score": "112-124",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-13",
+    "outcome": 1,
+    "payload": {
+      "opp": "ATL",
+      "score": "141-116",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-15",
+    "outcome": 0,
+    "payload": {
+      "opp": "CHA",
+      "score": "117-135",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-17",
+    "outcome": 0,
+    "payload": {
+      "opp": "POR",
+      "score": "116-132",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-18",
+    "outcome": 1,
+    "payload": {
+      "opp": "TOR",
+      "score": "110-93",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-20",
+    "outcome": 1,
+    "payload": {
+      "opp": "DEN",
+      "score": "115-107",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-22",
+    "outcome": 0,
+    "payload": {
+      "opp": "LAC",
+      "score": "104-112",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-24",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "116-110",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-26",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHI",
+      "score": "129-118",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-28",
+    "outcome": 0,
+    "payload": {
+      "opp": "CLE",
+      "score": "99-129",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-01-30",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "142-111",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-01",
+    "outcome": 0,
+    "payload": {
+      "opp": "NY",
+      "score": "100-112",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "BKN",
+      "score": "125-109",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-05",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHI",
+      "score": "119-115",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-07",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "105-99",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-09",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "110-119",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-10",
+    "outcome": 0,
+    "payload": {
+      "opp": "SA",
+      "score": "108-136",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-12",
+    "outcome": 1,
+    "payload": {
+      "opp": "DAL",
+      "score": "124-104",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-20",
+    "outcome": 1,
+    "payload": {
+      "opp": "LAC",
+      "score": "125-122",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-22",
+    "outcome": 0,
+    "payload": {
+      "opp": "BOS",
+      "score": "89-111",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-24",
+    "outcome": 0,
+    "payload": {
+      "opp": "ORL",
+      "score": "109-110",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-26",
+    "outcome": 0,
+    "payload": {
+      "opp": "PHX",
+      "score": "110-113",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-02-28",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "129-101",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-01",
+    "outcome": 1,
+    "payload": {
+      "opp": "SAC",
+      "score": "128-104",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-03",
+    "outcome": 1,
+    "payload": {
+      "opp": "NO",
+      "score": "110-101",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-05",
+    "outcome": 0,
+    "payload": {
+      "opp": "DEN",
+      "score": "113-120",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-06",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "128-117",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-08",
+    "outcome": 1,
+    "payload": {
+      "opp": "NY",
+      "score": "110-97",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIN",
+      "score": "120-106",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-12",
+    "outcome": 1,
+    "payload": {
+      "opp": "CHI",
+      "score": "142-130",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-14",
+    "outcome": 1,
+    "payload": {
+      "opp": "DEN",
+      "score": "127-125",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-16",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "100-92",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-18",
+    "outcome": 1,
+    "payload": {
+      "opp": "HOU",
+      "score": "124-116",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-19",
+    "outcome": 1,
+    "payload": {
+      "opp": "MIA",
+      "score": "134-126",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-21",
+    "outcome": 1,
+    "payload": {
+      "opp": "ORL",
+      "score": "105-104",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-23",
+    "outcome": 0,
+    "payload": {
+      "opp": "DET",
+      "score": "110-113",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-25",
+    "outcome": 1,
+    "payload": {
+      "opp": "IND",
+      "score": "137-130",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-27",
+    "outcome": 1,
+    "payload": {
+      "opp": "BKN",
+      "score": "116-99",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-30",
+    "outcome": 1,
+    "payload": {
+      "opp": "WSH",
+      "score": "120-101",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-03-31",
+    "outcome": 1,
+    "payload": {
+      "opp": "CLE",
+      "score": "127-113",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-02",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "96-139",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-05",
+    "outcome": 0,
+    "payload": {
+      "opp": "DAL",
+      "score": "128-134",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-07",
+    "outcome": 0,
+    "payload": {
+      "opp": "OKC",
+      "score": "87-123",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-09",
+    "outcome": 1,
+    "payload": {
+      "opp": "GS",
+      "score": "119-103",
+      "home": false,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-10",
+    "outcome": 1,
+    "payload": {
+      "opp": "PHX",
+      "score": "101-73",
+      "home": true,
+      "season": 2026
+    }
+  },
+  {
+    "date": "2026-04-12",
+    "outcome": 1,
+    "payload": {
+      "opp": "UTAH",
+      "score": "131-107",
+      "home": true,
+      "season": 2026
+    }
+  }
+]
