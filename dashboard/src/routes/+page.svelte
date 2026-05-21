@@ -50,7 +50,7 @@
   </h1>
 
   <div class="status-row">
-    <span class="status-pill">
+    <span class="status-pill" data-freshness={data.freshness?.state ?? "missing"}>
       <span class="status-dot"></span>
       {#if data.lastTick}
         last tick <strong>{data.lastTick.date}</strong>
@@ -59,6 +59,10 @@
         {#if data.lastTick.duration_seconds != null}
           <span class="sep">·</span>
           {data.lastTick.duration_seconds.toFixed(1)}s
+        {/if}
+        {#if data.freshness?.state === "stale"}
+          <span class="sep">·</span>
+          <span class="stale-flag">{data.freshness.daysBehind} day{data.freshness.daysBehind === 1 ? "" : "s"} behind</span>
         {/if}
       {:else}
         no ticks yet
@@ -183,6 +187,7 @@
     border: 1px solid var(--border-strong);
     border-radius: 100px;
     letter-spacing: 0.04em;
+    transition: border-color 0.2s ease, color 0.2s ease;
   }
   .status-pill strong { color: var(--fg); font-weight: 500; }
   .status-dot {
@@ -192,6 +197,29 @@
     background: var(--accent);
     box-shadow: 0 0 8px var(--accent);
     animation: pulse 2.4s infinite;
+  }
+  /* Stale / missing freshness — visible signal, not silent rot. */
+  .status-pill[data-freshness="stale"] {
+    border-color: var(--c-down);
+    color: var(--fg);
+  }
+  .status-pill[data-freshness="stale"] .status-dot {
+    background: var(--c-down);
+    box-shadow: 0 0 8px var(--c-down);
+  }
+  .status-pill[data-freshness="missing"] {
+    border-color: var(--fg-dim);
+    color: var(--fg-muted);
+  }
+  .status-pill[data-freshness="missing"] .status-dot {
+    background: var(--fg-dim);
+    box-shadow: none;
+    animation: none;
+  }
+  .stale-flag {
+    color: var(--c-down);
+    font-weight: 500;
+    letter-spacing: 0.04em;
   }
   .winner-line { letter-spacing: 0.02em; }
   .winner-line strong { color: var(--fg); font-weight: 500; }
