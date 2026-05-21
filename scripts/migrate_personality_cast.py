@@ -44,6 +44,62 @@ from bootstrap_genesis import (  # noqa: E402
 log = logging.getLogger(__name__)
 
 
+def _has_column(conn, table: str, column: str) -> bool:
+    rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
+    return any((r[1] if not hasattr(r, "keys") else r["name"]) == column for r in rows)
+
+
+def _has_table(conn, table: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone()
+    return row is not None
+
+
+def apply_v3_schema_additions(conn) -> list[str]:
+    """Apply additive schema additions a pre-Phase-1 DB is missing.
+
+    All operations are idempotent: only runs ALTER/CREATE if the column/table
+    isn't already present. Returns a list of human-readable change descriptions.
+    """
+    changes = []
+    if not _has_column(conn, "named_monkeys", "personality_config"):
+        conn.execute("ALTER TABLE named_monkeys ADD COLUMN personality_config TEXT")
+        changes.append("named_monkeys.personality_config TEXT")
+    if not _has_column(conn, "genesis_log", "external_events_fingerprint"):
+        conn.execute("ALTER TABLE genesis_log ADD COLUMN external_events_fingerprint TEXT")
+        changes.append("genesis_log.external_events_fingerprint TEXT")
+    if not _has_column(conn, "genesis_log", "cast_version"):
+        conn.execute("ALTER TABLE genesis_log ADD COLUMN cast_version INTEGER NOT NULL DEFAULT 1")
+        changes.append("genesis_log.cast_version INTEGER DEFAULT 1")
+    if not _has_column(conn, "genesis_log", "personality_config_json"):
+        conn.execute("ALTER TABLE genesis_log ADD COLUMN personality_config_json TEXT")
+        changes.append("genesis_log.personality_config_json TEXT")
+    if not _has_table(conn, "external_events"):
+        conn.execute(
+            "CREATE TABLE external_events ("
+            "date TEXT NOT NULL, event_kind TEXT NOT NULL, outcome INTEGER NOT NULL, "
+            "payload_json TEXT, PRIMARY KEY (date, event_kind))"
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_external_events_kind_date "
+            "ON external_events(event_kind, date)"
+        )
+        changes.append("external_events table + idx_external_events_kind_date")
+    if not _has_table(conn, "external_events_rebase_log"):
+        conn.execute(
+            "CREATE TABLE external_events_rebase_log ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "rebased_at TEXT NOT NULL DEFAULT (datetime('now')), "
+            "old_fingerprint TEXT, new_fingerprint TEXT NOT NULL, "
+            "rows_added INTEGER NOT NULL DEFAULT 0, "
+            "rows_removed INTEGER NOT NULL DEFAULT 0, "
+            "reason TEXT NOT NULL)"
+        )
+        changes.append("external_events_rebase_log table")
+    return changes
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
@@ -58,6 +114,12 @@ def main() -> int:
         return 2
 
     with get_conn(args.db) as conn:
+        # On pre-Phase-1 DBs (no cast_version column, no external_events table),
+        # apply the additive schema first so the rest of the migration can run.
+        schema_changes = apply_v3_schema_additions(conn)
+        if schema_changes:
+            log.info("Applied v3 schema additions: %s", ", ".join(schema_changes))
+
         row = conn.execute(
             "SELECT cast_version, seed_string, n_monkeys FROM genesis_log WHERE id=1"
         ).fetchone()
