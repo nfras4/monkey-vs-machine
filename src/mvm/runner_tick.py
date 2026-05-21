@@ -33,7 +33,8 @@ from .models.ai_step import (
     slice_train,
     to_xy,
 )
-from .models.monkey_step import compute_equity, step_monkeys_one_day
+from .models.monkey_step import apply_personality_overrides, compute_equity, step_monkeys_one_day
+from .models.personality import load_named_personalities
 from .models.registry import CHAMPION_MODEL_ID, MODELS
 from .runtime_fingerprint import runtime_fingerprint
 from .state.db import get_conn, transaction
@@ -55,12 +56,76 @@ AI_TOP_K = 10
 BENCHMARK_TICKER = "SPY"  # fetched alongside the universe, never traded
 
 
+class DeterminismError(RuntimeError):
+    """Raised when frozen state has drifted between genesis and tick time.
+
+    Currently triggers if `external_events_fingerprint` in genesis_log doesn't
+    match the SHA256 of the live `external_events` table. The sanctioned
+    recovery is `scripts/rebase_external_events.py` (audit-logged).
+    """
+
+
 @dataclass
 class TickResult:
     status: str
     date: str
     duration_seconds: float
     note: Optional[str] = None
+
+
+def _compute_external_events_fingerprint(conn: sqlite3.Connection) -> str:
+    """Mirror of bootstrap_genesis.compute_external_events_fingerprint.
+
+    Inlined here so runner_tick has no cross-import to scripts/.
+    """
+    import hashlib
+    rows = conn.execute(
+        "SELECT date, event_kind, outcome FROM external_events ORDER BY date, event_kind"
+    ).fetchall()
+    h = hashlib.sha256()
+    for r in rows:
+        d, k, o = r["date"], r["event_kind"], r["outcome"]
+        h.update(f"{d}|{k}|{o}\n".encode("utf-8"))
+    return h.hexdigest()
+
+
+def _check_external_events_fingerprint(conn: sqlite3.Connection) -> None:
+    """Tick-start determinism guard. Four-case NULL dispatch per the plan.
+
+    Tolerates pre-Phase-1 schemas (no `external_events_fingerprint` column,
+    no `external_events` table) by treating them as the permissive
+    NULL+empty case. This lets the live production DB keep ticking until
+    `scripts/migrate_personality_cast.py` is run, at which point the guard
+    flips to enforcing mode automatically.
+    """
+    try:
+        row = conn.execute(
+            "SELECT external_events_fingerprint FROM genesis_log WHERE id=1"
+        ).fetchone()
+        stored = row["external_events_fingerprint"] if row else None
+    except sqlite3.OperationalError:
+        # Pre-Phase-1: column doesn't exist. Treat as NULL.
+        stored = None
+
+    try:
+        event_count = conn.execute("SELECT COUNT(*) FROM external_events").fetchone()[0]
+    except sqlite3.OperationalError:
+        # Pre-Phase-1: table doesn't exist. Treat as empty.
+        event_count = 0
+
+    if stored is None:
+        if event_count == 0:
+            return  # permissive: pre-Phase-1 DB with no events
+        raise DeterminismError(
+            "genesis_log.external_events_fingerprint is NULL but external_events has rows. "
+            "Run scripts/rebase_external_events.py to authorise."
+        )
+    computed = _compute_external_events_fingerprint(conn)
+    if computed != stored:
+        raise DeterminismError(
+            f"external_events fingerprint mismatch (stored={stored[:12]}..., "
+            f"computed={computed[:12]}...). Run scripts/rebase_external_events.py if intentional."
+        )
 
 
 def _genesis_metadata(conn: sqlite3.Connection) -> Dict:
@@ -203,6 +268,9 @@ def run_tick(date: str, *, db_path=None) -> TickResult:
     t0 = time.perf_counter()
 
     with get_conn(db_path) as conn:
+        # Determinism guard: refuse to tick if frozen state has drifted.
+        _check_external_events_fingerprint(conn)
+
         meta = _genesis_metadata(conn)
         universe = meta["universe_tickers"]
         n_monkeys = meta["n_monkeys"]
@@ -322,18 +390,76 @@ def run_tick(date: str, *, db_path=None) -> TickResult:
                 prices_today_arr = np.where(np.isfinite(prices_today_arr) & (prices_today_arr > 0),
                                             prices_today_arr, 1.0)
 
+                # Load named-monkey personalities (typed) BEFORE the vector step
+                # so we can snapshot their pre-step state and revert post-step.
+                named_personalities = load_named_personalities(conn)
+                pre_step_state: dict[int, tuple[float, float, int]] = {
+                    mid: (float(cash[mid]), float(shares[mid]), int(pos[mid]))
+                    for mid in named_personalities
+                }
+
                 monkey_seed = hash_seed("monkey_tick", date, seed_string=seed_string)
                 rng = np.random.default_rng(monkey_seed)
                 actions = step_monkeys_one_day(prices_today_arr, cash, shares, pos, rng=rng)
+
+                # Independent RNG for named monkeys — keeps the 99,992 unnamed
+                # monkeys' vector-path decisions bit-identical regardless of
+                # cast composition or quirks.
+                if named_personalities:
+                    named_seed = hash_seed("named_monkey_tick", date, seed_string=seed_string)
+                    rng_named = np.random.default_rng(named_seed)
+                    apply_personality_overrides(
+                        actions=actions,
+                        prices_today=prices_today_arr,
+                        cash=cash,
+                        shares=shares,
+                        pos=pos,
+                        named_personalities=named_personalities,
+                        pre_step_state=pre_step_state,
+                        rng_named=rng_named,
+                        date=date,
+                        close_filled=close_filled,
+                        universe=universe,
+                    )
+
                 equity = compute_equity(prices_today_arr, cash, shares, pos)
+
+                # Snapshot aggregate distribution BEFORE event-driven equity
+                # adjustments so personality bonuses (Joe's Lakers credit etc.)
+                # don't skew the 100k-monkey median/percentiles.
+                p5, p25, p50, p75, p95 = np.percentile(equity, [5, 25, 50, 75, 95])
+                aggregate_snapshot = {
+                    "monkey_mean": float(np.mean(equity)),
+                    "monkey_median": float(p50),
+                    "monkey_p5": float(p5),
+                    "monkey_p25": float(p25),
+                    "monkey_p75": float(p75),
+                    "monkey_p95": float(p95),
+                    "monkey_best": float(np.max(equity)),
+                    "monkey_worst": float(np.min(equity)),
+                    "n_monkeys": int(n_monkeys),
+                    "n_monkeys_above_starting": int((equity > DEFAULT_STARTING_CASH).sum()),
+                }
+
+                # Apply event-driven equity adjustments to named monkeys ONLY.
+                # These mutate the per-monkey equity row but NOT the aggregate
+                # snapshot above — keeps the 100k distribution clean.
+                for mid, (_name, personality) in named_personalities.items():
+                    delta = personality.event_adjustment(date, conn)
+                    if delta:
+                        new_eq = equity[mid] + delta
+                        floor = getattr(personality, "floor", None)
+                        if floor is not None and new_eq < floor:
+                            new_eq = float(floor)
+                        # Park the delta in cash so the equity reconciles
+                        # (mark-to-market would otherwise overwrite it).
+                        cash[mid] = float(cash[mid]) + (new_eq - float(equity[mid]))
+                        equity[mid] = new_eq
 
                 # === Snapshot writers ===
                 upsert_monkey_state(conn, date, cash, shares, pos, equity, actions, universe)
                 yesterday_eq = _yesterday_equity(conn, date, n_monkeys)
                 refresh_named_monkeys(conn, date, equity, yesterday_eq)
-
-                # Aggregates
-                p5, p25, p50, p75, p95 = np.percentile(equity, [5, 25, 50, 75, 95])
 
                 # SPY benchmark equity: anchored at genesis.spy_anchor_close.
                 # `spy_equity[date] = starting_cash * close[SPY, date] / anchor_close`.
@@ -350,19 +476,8 @@ def run_tick(date: str, *, db_path=None) -> TickResult:
                 else:
                     spy_equity = None  # missing benchmark data: render as null on the dashboard
 
-                write_aggregates_row(conn, "daily_aggregates", date, {
-                    "monkey_mean": float(np.mean(equity)),
-                    "monkey_median": float(p50),
-                    "monkey_p5": float(p5),
-                    "monkey_p25": float(p25),
-                    "monkey_p75": float(p75),
-                    "monkey_p95": float(p95),
-                    "monkey_best": float(np.max(equity)),
-                    "monkey_worst": float(np.min(equity)),
-                    "n_monkeys": int(n_monkeys),
-                    "n_monkeys_above_starting": int((equity > DEFAULT_STARTING_CASH).sum()),
-                    "spy_equity": spy_equity,
-                })
+                aggregate_snapshot["spy_equity"] = spy_equity
+                write_aggregates_row(conn, "daily_aggregates", date, aggregate_snapshot)
 
                 # Tick row
                 duration = time.perf_counter() - t0
