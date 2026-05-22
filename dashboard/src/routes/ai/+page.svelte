@@ -17,17 +17,17 @@
   <p class="section-num">
     <span class="section-num-num">04</span>
     <span class="section-num-line"></span>
-    <span class="section-num-label">AI internals</span>
+    <span class="section-num-label">model internals</span>
   </p>
-  <h1 class="page-title">Inside the trader</h1>
+  <h1 class="page-title">Inside the model</h1>
   <p class="page-sub">
-    registered model_ids · {data.modelIds.join(", ") || "(none yet)"}
+    model_ids · {data.modelIds.join(", ") || "(none)"}
   </p>
 </section>
 
 <div class="grid">
   <section class="block">
-    <h2 class="block-title">Current holdings <span class="muted">(champion)</span></h2>
+    <h2 class="block-title">Holdings <span class="muted">(champion)</span></h2>
     <div class="table-wrap">
       <table class="data-table">
         <thead><tr><th class="left">Ticker</th><th>Weight</th></tr></thead>
@@ -44,7 +44,7 @@
   </section>
 
   <section class="block">
-    <h2 class="block-title">Permutation importance <span class="muted">(latest train)</span></h2>
+    <h2 class="block-title">Permutation importance <span class="muted">(last retrain)</span></h2>
     <ul class="bar-list">
       {#each importances as i}
         <li>

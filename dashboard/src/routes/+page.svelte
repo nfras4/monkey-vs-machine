@@ -81,7 +81,7 @@
         <span class="sep">·</span>
         {beating.toLocaleString()} / {totalMonkeys.toLocaleString()} monkeys above starting cash
       {:else if daysOfData < 5}
-        too early to call — only {daysOfData} tick{daysOfData === 1 ? "" : "s"} of data
+        too early to call · only {daysOfData} tick{daysOfData === 1 ? "" : "s"} of data
       {:else}
         currently tied within 0.1%
       {/if}
@@ -114,12 +114,76 @@
   </div>
 </section>
 
+<section class="chart-section">
+  {#if data.aiEquity.length === 0}
+    <header class="chart-head">
+      <h2 class="chart-title">Equity curves</h2>
+    </header>
+    <p class="empty">
+      No ticks yet. Run <code>scripts/bootstrap_genesis.py</code> + <code>scripts/run_tick.py</code>, then push.
+    </p>
+  {:else}
+    <SplitPanel
+      title="Equity curves"
+      sub="$10,000 starting cash · 5bp transaction cost · real S&P 500 bars"
+    >
+      {#snippet left()}
+        <article class="chart-card">
+          <header class="chart-card-head">
+            <h3 class="chart-card-title">AI vs SPY</h3>
+            <ul class="legend legend--inline">
+              <li><span class="swatch sw-ai"></span> AI trader</li>
+              <li><span class="swatch sw-spy"></span> SPY benchmark</li>
+            </ul>
+          </header>
+          <div class="chart-frame">
+            <EquityChart
+              {dates}
+              {aiEquity}
+              {spyEquity}
+              {monkeyMedian}
+              {monkeyP5}
+              {monkeyP95}
+              {monkeyBest}
+              variant="ai-vs-spy"
+              height="340px"
+            />
+          </div>
+        </article>
+      {/snippet}
+      {#snippet right()}
+        <article class="chart-card">
+          <header class="chart-card-head">
+            <h3 class="chart-card-title">Monkey distribution</h3>
+            <ul class="legend legend--inline">
+              <li><span class="swatch sw-monkey"></span> Median &amp; 5–95% band</li>
+            </ul>
+          </header>
+          <div class="chart-frame">
+            <EquityChart
+              {dates}
+              {aiEquity}
+              {spyEquity}
+              {monkeyMedian}
+              {monkeyP5}
+              {monkeyP95}
+              {monkeyBest}
+              variant="monkey-band"
+              height="340px"
+            />
+          </div>
+        </article>
+      {/snippet}
+    </SplitPanel>
+  {/if}
+</section>
+
 {#if data.scoreboard && data.scoreboard.total_days > 0}
   {@const sb = data.scoreboard}
   <section class="scoreboard-section">
     <header class="scoreboard-head">
       <h2 class="scoreboard-title">Race scoreboard</h2>
-      <p class="scoreboard-sub">days each leader closed the tick on top · ties (within 0.1%) uncounted</p>
+      <p class="scoreboard-sub">days each leader closed the tick on top · ignores ties within 0.1%</p>
     </header>
     <div class="scoreboard-grid">
       <article class="score-card score-ai">
@@ -270,71 +334,6 @@
     </div>
   </section>
 {/if}
-
-<section class="chart-section">
-  {#if data.aiEquity.length === 0}
-    <header class="chart-head">
-      <h2 class="chart-title">Equity curves</h2>
-    </header>
-    <p class="empty">
-      No ticks yet. Run <code>scripts/bootstrap_genesis.py</code> + <code>scripts/run_tick.py</code>, then push.
-    </p>
-  {:else}
-    <SplitPanel
-      title="Equity curves"
-      sub="$10,000 starting cash · 5bp transaction cost · real S&P 500 bars"
-    >
-      {#snippet left()}
-        <article class="chart-card">
-          <header class="chart-card-head">
-            <h3 class="chart-card-title">AI vs SPY</h3>
-            <ul class="legend legend--inline">
-              <li><span class="swatch sw-ai"></span> AI trader</li>
-              <li><span class="swatch sw-spy"></span> SPY benchmark</li>
-            </ul>
-          </header>
-          <div class="chart-frame">
-            <EquityChart
-              {dates}
-              {aiEquity}
-              {spyEquity}
-              {monkeyMedian}
-              {monkeyP5}
-              {monkeyP95}
-              {monkeyBest}
-              variant="ai-vs-spy"
-              height="340px"
-            />
-          </div>
-        </article>
-      {/snippet}
-      {#snippet right()}
-        <article class="chart-card">
-          <header class="chart-card-head">
-            <h3 class="chart-card-title">Monkey distribution</h3>
-            <ul class="legend legend--inline">
-              <li><span class="swatch sw-monkey"></span> Median &amp; 5–95% band</li>
-              <li><span class="swatch sw-best"></span> Best today</li>
-            </ul>
-          </header>
-          <div class="chart-frame">
-            <EquityChart
-              {dates}
-              {aiEquity}
-              {spyEquity}
-              {monkeyMedian}
-              {monkeyP5}
-              {monkeyP95}
-              {monkeyBest}
-              variant="monkey-band"
-              height="340px"
-            />
-          </div>
-        </article>
-      {/snippet}
-    </SplitPanel>
-  {/if}
-</section>
 
 <style>
   /* Hero */

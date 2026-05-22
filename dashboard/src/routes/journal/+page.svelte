@@ -16,12 +16,12 @@
   </p>
   <h1 class="page-title">Daily journal</h1>
   <p class="page-sub">
-    What the AI saw, what it changed, how it ranked — one entry per tick, reverse chronological.
+    One entry per tick. Newest first.
   </p>
 </section>
 
 {#if data.insights.length === 0}
-  <p class="empty">No ticks yet — the journal will fill in as soon as data starts flowing.</p>
+  <p class="empty">No ticks yet. First entry lands after the next run.</p>
 {:else}
   <ol class="journal-feed">
     {#each data.insights as ins}
@@ -41,7 +41,7 @@
             {/if}
             {#if ins.ai_percentile != null}
               <span class="entry-pill">
-                p{ins.ai_percentile.toFixed(0)} in the pack
+                p{ins.ai_percentile.toFixed(0)} vs pack
               </span>
             {/if}
           </div>
@@ -51,7 +51,7 @@
           <div class="entry-section">
             <p class="entry-label">Portfolio</p>
             {#if ins.rotation.in_count === 0 && ins.rotation.kept === 0}
-              <p class="entry-text">First tick — no prior portfolio to compare against.</p>
+              <p class="entry-text">First tick. No prior portfolio.</p>
             {:else}
               <p class="entry-text">
                 Rotated <strong>{ins.rotation.in_count}</strong> of 10 holdings;
@@ -70,11 +70,10 @@
             <p class="entry-label">Model</p>
             {#if ins.top_features.length}
               <p class="entry-text">
-                Leaned on
+                Top features:
                 {#each ins.top_features as f, i}
                   <strong>{f.feature}</strong>{i < ins.top_features.length - 1 ? ", " : ""}
                 {/each}
-                today.
               </p>
               <p class="entry-detail muted">
                 permutation importance: {ins.top_features.map((f) => f.importance.toFixed(4)).join(" / ")}
@@ -89,7 +88,7 @@
               <p class="entry-label">Cast</p>
               {#if ins.best_personality}
                 <p class="entry-text">
-                  Standout: <strong>{ins.best_personality.name}</strong>
+                  Best monkey: <strong>{ins.best_personality.name}</strong>
                   <span class={ins.best_personality.delta_pct >= 0 ? "up" : "down"}>
                     {ins.best_personality.delta_pct >= 0 ? "▲" : "▼"}
                     {Math.abs(ins.best_personality.delta_pct).toFixed(2)}%
@@ -99,7 +98,7 @@
               {/if}
               {#if ins.lakers}
                 <p class="entry-detail">
-                  Lakers <strong>{ins.lakers.outcome === "win" ? "won" : "lost"}</strong> —
+                  Lakers <strong>{ins.lakers.outcome === "win" ? "won" : "lost"}</strong>.
                   Joe {ins.lakers.delta >= 0 ? "+" : ""}${Math.abs(ins.lakers.delta)}.
                 </p>
               {/if}

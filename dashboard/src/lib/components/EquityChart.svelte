@@ -89,16 +89,20 @@
         pointRadius: 0,
         tension: 0.1,
       },
-      {
-        label: "Best monkey today",
-        data: monkeyBest,
-        borderColor: cBest,
-        borderWidth: 1.5,
-        borderDash: [4, 3],
-        pointRadius: 0,
-        tension: 0,
-      },
     ];
+    // The lucky-monkey-today line is informative but blows out the y-axis on
+    // the monkey-band variant (one monkey can be +20% while the median band
+    // sits within ±3%). Keep it only on the "all" variant; the KPI card
+    // already surfaces the current best-monkey equity.
+    const bestDataset = {
+      label: "Best monkey today",
+      data: monkeyBest,
+      borderColor: cBest,
+      borderWidth: 1.5,
+      borderDash: [4, 3],
+      pointRadius: 0,
+      tension: 0,
+    };
     const aiSpyDatasets = [
       {
         label: "AI trader",
@@ -124,8 +128,8 @@
       variant === "ai-vs-spy"
         ? aiSpyDatasets
         : variant === "monkey-band"
-          ? monkeyDatasets
-          : [...monkeyDatasets, ...aiSpyDatasets];
+          ? monkeyDatasets // intentionally excludes bestDataset — see above
+          : [...monkeyDatasets, bestDataset, ...aiSpyDatasets];
 
     chartInstance = new ChartCtor(canvas!, {
       type: "line",

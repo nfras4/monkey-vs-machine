@@ -12,7 +12,7 @@
   <h1 class="title">What this is</h1>
 
   <p class="lede">
-    <strong>Monkey vs Machine</strong> is a long-running, fully simulated stock-trading
+    <strong>Monkey vs Machine</strong> is a fully simulated stock-trading
     experiment. Every US trading day, a single AI trader and an army of
     <strong>100,000 random "monkey" traders</strong> each make their next move on real
     historical S&amp;P 500 prices. The dashboard tracks all of them.
@@ -52,8 +52,8 @@
       label can never peek at the prediction date.
     </li>
     <li>
-      Designed to be swappable. The codebase keeps the AI behind a
-      <code>MODELS</code> registry — adding a LightGBM or stacking ensemble later
+      Swappable by design. The codebase keeps the AI behind a
+      <code>MODELS</code> registry. Adding a LightGBM or stacking ensemble later
       is one entry in a dict. The schema is model-keyed from day one.
     </li>
   </ul>

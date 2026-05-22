@@ -10,8 +10,8 @@
     variant: "ai" | "monkey" | "spy" | "best";
   } {
     if (!configRaw) {
-      if (category === "top") return { tagline: "today's leaderboard", variant: "ai" };
-      if (category === "bottom") return { tagline: "today's stragglers", variant: "best" };
+      if (category === "top") return { tagline: "today's top equity", variant: "ai" };
+      if (category === "bottom") return { tagline: "bottom of the board", variant: "best" };
       if (category === "mover") return { tagline: "biggest 24h swing", variant: "monkey" };
       return { tagline: category, variant: "monkey" };
     }
@@ -19,9 +19,9 @@
       const c = JSON.parse(configRaw);
       switch (c.kind) {
         case "tech_lover":
-          return { tagline: `tech sector affinity · ${Math.round((c.bias ?? 0.7) * 100)}% bias`, variant: "ai" };
+          return { tagline: `overweights tech · ${Math.round((c.bias ?? 0.7) * 100)}%`, variant: "ai" };
         case "value_hunter":
-          return { tagline: "value tilt · avoids tech", variant: "spy" };
+          return { tagline: "buys cheap · skips tech", variant: "spy" };
         case "weekday_trader": {
           const days = (c.trade_days as number[] | undefined)?.map((d) => ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][d]).join("/") ?? "Mon";
           return { tagline: `trades only ${days}`, variant: "monkey" };
@@ -85,14 +85,14 @@
     <span class="section-num-label">named monkeys</span>
   </p>
   <h1 class="page-title">The cast</h1>
-  <p class="page-sub">Eight characters with deterministic quirks · plus the daily leaderboard.</p>
+  <p class="page-sub">Eight hard-coded personalities. Plus today's top, bottom, and biggest mover.</p>
 </section>
 
 {#if personality.length > 0}
   <section class="roster">
     <header class="roster-head">
       <h2 class="roster-title">Personalities</h2>
-      <p class="roster-count">{personality.length} characters</p>
+      <p class="roster-count">{personality.length} monkeys</p>
     </header>
     <div class="roster-grid">
       {#each personality as c}
