@@ -21,6 +21,7 @@ const ROUTES = [
   { path: "/monkeys", slug: "monkeys" },
   { path: "/aggregates", slug: "aggregates" },
   { path: "/ai", slug: "ai" },
+  { path: "/journal", slug: "journal" },
   { path: "/about", slug: "about" },
 ];
 

@@ -110,6 +110,119 @@
   </div>
 </section>
 
+{#if data.insight}
+  {@const ins = data.insight}
+  <section class="insight-section">
+    <header class="insight-head">
+      <h2 class="insight-title">Today's read</h2>
+      <p class="insight-sub">
+        <a href="/journal">see full journal →</a>
+      </p>
+    </header>
+    <div class="insight-grid">
+      <article class="insight-card">
+        <p class="insight-label">Portfolio rotation</p>
+        {#if ins.rotation.in_count === 0 && ins.rotation.kept === 0}
+          <p class="insight-value">first tick — no prior portfolio</p>
+        {:else}
+          <p class="insight-value">
+            <strong>{ins.rotation.in_count}</strong> of 10 holdings rotated
+          </p>
+          <p class="insight-detail">
+            {#if ins.rotation.out.length}<span class="muted">sold</span> {ins.rotation.out.slice(0, 3).join(", ")}{#if ins.rotation.out.length > 3}…{/if}{/if}
+            {#if ins.rotation.in.length}{#if ins.rotation.out.length} · {/if}<span class="muted">bought</span> {ins.rotation.in.slice(0, 3).join(", ")}{#if ins.rotation.in.length > 3}…{/if}{/if}
+          </p>
+        {/if}
+      </article>
+
+      <article class="insight-card">
+        <p class="insight-label">Top features today</p>
+        {#if ins.top_features.length}
+          <ul class="feature-list">
+            {#each ins.top_features as f}
+              <li>
+                <span class="feature-name">{f.feature}</span>
+                <span class="feature-bar">
+                  <span class="feature-fill" style="width: {Math.min(100, (f.importance / (ins.top_features[0].importance || 1)) * 100)}%"></span>
+                </span>
+                <span class="feature-val">{f.importance.toFixed(4)}</span>
+              </li>
+            {/each}
+          </ul>
+        {:else}
+          <p class="insight-value muted">no diagnostics</p>
+        {/if}
+      </article>
+
+      <article class="insight-card">
+        <p class="insight-label">AI vs SPY today</p>
+        <p class="insight-value">
+          {#if ins.ai_daily_return != null}
+            <span class={ins.ai_daily_return >= 0 ? "up" : "down"}>
+              AI {(ins.ai_daily_return * 100).toFixed(2)}%
+            </span>
+          {:else}
+            <span class="muted">AI —</span>
+          {/if}
+          {#if ins.spy_daily_return != null}
+            <span class="sep">·</span>
+            <span class={ins.spy_daily_return >= 0 ? "up" : "down"}>
+              SPY {(ins.spy_daily_return * 100).toFixed(2)}%
+            </span>
+          {/if}
+        </p>
+        <p class="insight-detail">
+          {#if ins.ai_daily_return != null && ins.spy_daily_return != null}
+            {@const bp = Math.round((ins.ai_daily_return - ins.spy_daily_return) * 10000)}
+            <span class="muted">delta</span> {bp >= 0 ? "+" : ""}{bp} bp
+          {/if}
+        </p>
+      </article>
+
+      <article class="insight-card">
+        <p class="insight-label">AI rank in the pack</p>
+        {#if ins.ai_percentile != null}
+          <p class="insight-value">
+            <strong>{ins.ai_percentile.toFixed(0)}<sup class="ordinal">th</sup></strong> percentile
+          </p>
+          <p class="insight-detail muted">
+            of 100,000 monkeys
+          </p>
+        {:else}
+          <p class="insight-value muted">no rank yet</p>
+        {/if}
+      </article>
+
+      {#if ins.best_personality}
+        <article class="insight-card">
+          <p class="insight-label">Cast standout</p>
+          <p class="insight-value">
+            <strong>{ins.best_personality.name}</strong>
+            <span class={ins.best_personality.delta_pct >= 0 ? "up" : "down"}>
+              {ins.best_personality.delta_pct >= 0 ? "▲" : "▼"} {Math.abs(ins.best_personality.delta_pct).toFixed(2)}%
+            </span>
+          </p>
+          <p class="insight-detail muted">
+            ${ins.best_personality.equity.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </p>
+        </article>
+      {/if}
+
+      {#if ins.lakers}
+        <article class="insight-card">
+          <p class="insight-label">Lakers Joe</p>
+          <p class="insight-value">
+            Lakers <strong>{ins.lakers.outcome === "win" ? "W" : "L"}</strong>
+            <span class={ins.lakers.delta >= 0 ? "up" : "down"}>
+              {ins.lakers.delta >= 0 ? "+" : ""}${Math.abs(ins.lakers.delta)}
+            </span>
+          </p>
+        </article>
+      {/if}
+    </div>
+  </section>
+{/if}
+
 <section class="chart-section">
   {#if data.aiEquity.length === 0}
     <header class="chart-head">
@@ -268,6 +381,119 @@
   .winner-line { letter-spacing: 0.02em; }
   .winner-line strong { color: var(--fg); font-weight: 500; }
   .sep { color: var(--fg-dim); margin: 0 4px; }
+
+  /* Today's read */
+  .insight-section { margin-bottom: 56px; }
+  .insight-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .insight-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin: 0;
+    font-weight: 500;
+  }
+  .insight-sub {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .insight-sub a { color: var(--accent); }
+  .insight-sub a:hover { color: var(--fg); }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+  }
+  .insight-card {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .insight-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+  .insight-value {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .insight-value strong { font-weight: 500; }
+  .insight-detail {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+    margin: 0;
+  }
+  .insight-detail .muted,
+  .insight-value .muted { color: var(--fg-dim); }
+  .insight-value .up   { color: var(--c-up); }
+  .insight-value .down { color: var(--c-down); }
+  .insight-value .sep  { color: var(--fg-dim); margin: 0 4px; }
+  .ordinal {
+    font-size: 0.6em;
+    letter-spacing: 0;
+    margin-left: 1px;
+    color: var(--fg-dim);
+  }
+
+  /* Importance bars in the insight card */
+  .feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .feature-list li {
+    display: grid;
+    grid-template-columns: 64px 1fr 52px;
+    align-items: center;
+    gap: 8px;
+  }
+  .feature-name { color: var(--fg); }
+  .feature-bar {
+    display: block;
+    height: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .feature-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+  .feature-val {
+    text-align: right;
+    color: var(--fg-muted);
+  }
 
   @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 50%, transparent); }

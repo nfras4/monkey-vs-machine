@@ -9,7 +9,8 @@
     { href: "/aggregates", label: "Aggregates", num: "02" },
     { href: "/monkeys", label: "Monkeys", num: "03" },
     { href: "/ai", label: "AI", num: "04" },
-    { href: "/about", label: "About", num: "05" },
+    { href: "/journal", label: "Journal", num: "05" },
+    { href: "/about", label: "About", num: "06" },
   ];
 
   let menuOpen = $state(false);

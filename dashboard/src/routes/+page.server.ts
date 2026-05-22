@@ -1,4 +1,4 @@
-import { getAiEquity, getLastTick, getRecentAggregates } from "$lib/server/d1";
+import { getAiEquity, getDailyInsight, getLastTick, getRecentAggregates } from "$lib/server/d1";
 import type { PageServerLoad } from "./$types";
 
 // Returns the most recent US trading day we'd expect a tick for, given the
@@ -46,10 +46,11 @@ function weekdaysBetween(a: string, b: string): number {
 export const load: PageServerLoad = async ({ platform, setHeaders }) => {
   setHeaders({ "cache-control": "public, max-age=60" });
   const db = platform!.env.DB;
-  const [aggregates, aiEquity, lastTick] = await Promise.all([
+  const [aggregates, aiEquity, lastTick, insight] = await Promise.all([
     getRecentAggregates(db, 365),
     getAiEquity(db, 365),
     getLastTick(db),
+    getDailyInsight(db),
   ]);
 
   const expected = expectedLatestTradingDate();
@@ -63,5 +64,5 @@ export const load: PageServerLoad = async ({ platform, setHeaders }) => {
     freshness = { state: "stale", daysBehind: behind, expected };
   }
 
-  return { aggregates, aiEquity, lastTick, freshness };
+  return { aggregates, aiEquity, lastTick, freshness, insight };
 };
