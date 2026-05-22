@@ -342,6 +342,92 @@ export async function getDailyInsight(
   };
 }
 
+// === Race scoreboard ======================================================
+// Per-tick winner across AI / SPY / median monkey + running streaks.
+// One D1 subrequest: pulls equities + aggregate medians joined per date.
+
+import type { RaceWinner } from "$lib/race";
+export type { RaceWinner } from "$lib/race";
+
+export type RaceScoreboard = {
+  total_days: number;
+  /** Days each contender ended the tick with the highest equity. */
+  wins: Record<RaceWinner, number>;
+  /** Length of the current consecutive winning streak. */
+  current_streak: { winner: RaceWinner; days: number } | null;
+  /** Last 10 tick winners, newest first, for an inline sparkline. */
+  recent: { date: string; winner: RaceWinner }[];
+};
+
+export async function getRaceScoreboard(
+  db: D1Database,
+  modelId = CHAMPION_MODEL_ID,
+): Promise<RaceScoreboard> {
+  // Join AI equity, SPY benchmark (from daily_aggregates), and median monkey
+  // (also from daily_aggregates) on date. Order ascending so the streak walk
+  // is straightforward.
+  const { results } = await db
+    .prepare(
+      `SELECT a.date, e.equity AS ai_eq, a.spy_equity, a.monkey_median
+       FROM daily_aggregates a
+       LEFT JOIN ai_equity e ON e.date = a.date AND e.model_id = ?
+       ORDER BY a.date ASC`,
+    )
+    .bind(modelId)
+    .all<{ date: string; ai_eq: number | null; spy_equity: number | null; monkey_median: number | null }>();
+
+  const wins: Record<RaceWinner, number> = { ai: 0, spy: 0, median_monkey: 0 };
+  const dailyWinners: { date: string; winner: RaceWinner }[] = [];
+
+  for (const r of results ?? []) {
+    const candidates: [RaceWinner, number][] = [];
+    if (r.ai_eq != null) candidates.push(["ai", r.ai_eq]);
+    if (r.spy_equity != null) candidates.push(["spy", r.spy_equity]);
+    if (r.monkey_median != null) candidates.push(["median_monkey", r.monkey_median]);
+    if (candidates.length === 0) continue;
+    candidates.sort((a, b) => b[1] - a[1]);
+    const [topWinner, topEq] = candidates[0];
+    // Tie within 0.1% goes uncounted — same threshold as the hero "in the lead" copy.
+    const tied = candidates.slice(1).some(([, eq]) => Math.abs(eq - topEq) < topEq * 0.001);
+    if (tied) continue;
+    wins[topWinner]++;
+    dailyWinners.push({ date: r.date, winner: topWinner });
+  }
+
+  // Current streak walks backwards from the latest winner.
+  let current_streak: RaceScoreboard["current_streak"] = null;
+  if (dailyWinners.length > 0) {
+    const latest = dailyWinners[dailyWinners.length - 1].winner;
+    let days = 0;
+    for (let i = dailyWinners.length - 1; i >= 0; i--) {
+      if (dailyWinners[i].winner === latest) days++;
+      else break;
+    }
+    current_streak = { winner: latest, days };
+  }
+
+  const recent = dailyWinners.slice(-10).reverse();
+  return { total_days: dailyWinners.length, wins, current_streak, recent };
+}
+
+// === Monkey survival curve ================================================
+// Time-series of n_monkeys_above_starting for the /aggregates survival chart.
+
+export async function getMonkeySurvivalSeries(
+  db: D1Database,
+  days = 365,
+): Promise<{ date: string; above: number; n_monkeys: number }[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT date, n_monkeys_above_starting AS above, n_monkeys
+       FROM daily_aggregates
+       ORDER BY date DESC LIMIT ?`,
+    )
+    .bind(days)
+    .all<{ date: string; above: number; n_monkeys: number }>();
+  return (results ?? []).reverse();
+}
+
 /** Last N daily insights, newest first. Used by /journal. */
 export async function getRecentInsights(
   db: D1Database,

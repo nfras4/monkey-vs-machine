@@ -1,8 +1,13 @@
 <script lang="ts">
   import EquityChart from "$lib/components/EquityChart.svelte";
   import SplitPanel from "$lib/components/SplitPanel.svelte";
+  import { raceLabel, type RaceWinner } from "$lib/race";
 
   let { data } = $props();
+
+  function winnerVariant(w: RaceWinner): "ai" | "spy" | "monkey" {
+    return w === "ai" ? "ai" : w === "spy" ? "spy" : "monkey";
+  }
   const fmt = (n: number | null | undefined) =>
     n == null ? "—" : `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
@@ -45,9 +50,8 @@
   </p>
 
   <h1 class="hero-pitch">
-    <span class="muted">One AI trader,</span>
-    100,000 random monkeys,
-    <span class="accent">one S&amp;P 500.</span>
+    Can a <span class="accent">scikit-learn model</span> beat
+    100,000 monkeys <span class="muted">throwing darts?</span>
   </h1>
 
   <div class="status-row">
@@ -109,6 +113,50 @@
     </article>
   </div>
 </section>
+
+{#if data.scoreboard && data.scoreboard.total_days > 0}
+  {@const sb = data.scoreboard}
+  <section class="scoreboard-section">
+    <header class="scoreboard-head">
+      <h2 class="scoreboard-title">Race scoreboard</h2>
+      <p class="scoreboard-sub">days each leader closed the tick on top · ties (within 0.1%) uncounted</p>
+    </header>
+    <div class="scoreboard-grid">
+      <article class="score-card score-ai">
+        <p class="score-label">AI trader</p>
+        <p class="score-value">{sb.wins.ai} <span class="score-of">/ {sb.total_days}</span></p>
+      </article>
+      <article class="score-card score-spy">
+        <p class="score-label">SPY benchmark</p>
+        <p class="score-value">{sb.wins.spy} <span class="score-of">/ {sb.total_days}</span></p>
+      </article>
+      <article class="score-card score-monkey">
+        <p class="score-label">Median monkey</p>
+        <p class="score-value">{sb.wins.median_monkey} <span class="score-of">/ {sb.total_days}</span></p>
+      </article>
+      {#if sb.current_streak}
+        <article class="score-card score-streak">
+          <p class="score-label">Current streak</p>
+          <p class="score-value">
+            <strong class="streak-{winnerVariant(sb.current_streak.winner)}">{raceLabel(sb.current_streak.winner)}</strong>
+            {sb.current_streak.days}d
+          </p>
+        </article>
+      {/if}
+    </div>
+    {#if sb.recent.length > 1}
+      <ol class="streak-strip" aria-label="last {sb.recent.length} winners, newest first">
+        {#each sb.recent as r}
+          <li
+            class="streak-pip streak-{winnerVariant(r.winner)}"
+            title={`${r.date}: ${raceLabel(r.winner)}`}
+          ></li>
+        {/each}
+        <span class="streak-strip-label">last {sb.recent.length} ticks →</span>
+      </ol>
+    {/if}
+  </section>
+{/if}
 
 {#if data.insight}
   {@const ins = data.insight}
@@ -381,6 +429,114 @@
   .winner-line { letter-spacing: 0.02em; }
   .winner-line strong { color: var(--fg); font-weight: 500; }
   .sep { color: var(--fg-dim); margin: 0 4px; }
+
+  /* Race scoreboard */
+  .scoreboard-section { margin-bottom: 56px; }
+  .scoreboard-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .scoreboard-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin: 0;
+    font-weight: 500;
+  }
+  .scoreboard-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-dim);
+    margin: 0;
+    letter-spacing: 0.04em;
+  }
+  .scoreboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+  }
+  .score-card {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 18px 18px;
+    position: relative;
+    background: var(--bg);
+  }
+  .score-card::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    width: 18px;
+    height: 2px;
+    background: var(--score-color, var(--accent));
+  }
+  .score-ai     { --score-color: var(--c-ai); }
+  .score-spy    { --score-color: var(--c-spy); }
+  .score-monkey { --score-color: var(--c-monkey); }
+  .score-streak { --score-color: var(--accent); }
+  .score-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    padding-left: 26px;
+  }
+  .score-value {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--fg);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .score-of {
+    color: var(--fg-dim);
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 2px;
+  }
+  .streak-ai      { color: var(--c-ai); }
+  .streak-spy     { color: var(--c-spy); }
+  .streak-monkey  { color: var(--c-monkey); }
+
+  /* Mini pip strip of recent winners */
+  .streak-strip {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-dim);
+    letter-spacing: 0.04em;
+  }
+  .streak-pip {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+    background: var(--fg-dim);
+  }
+  .streak-pip.streak-ai     { background: var(--c-ai); }
+  .streak-pip.streak-spy    { background: var(--c-spy); }
+  .streak-pip.streak-monkey { background: var(--c-monkey); }
+  .streak-strip-label { margin-left: 6px; }
 
   /* Today's read */
   .insight-section { margin-bottom: 56px; }

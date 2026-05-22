@@ -1,6 +1,15 @@
 <script lang="ts">
   import SplitPanel from "$lib/components/SplitPanel.svelte";
+  import SurvivalChart from "$lib/components/SurvivalChart.svelte";
   let { data } = $props();
+
+  // Convert raw counts into percentage time-series for the chart.
+  const survivalDates = data.survival.map((r) => r.date);
+  const survivalPct = data.survival.map((r) =>
+    r.n_monkeys > 0 ? (r.above / r.n_monkeys) * 100 : 0,
+  );
+  const latest = data.survival.at(-1);
+  const latestPct = latest && latest.n_monkeys > 0 ? (latest.above / latest.n_monkeys) * 100 : null;
 </script>
 
 <section class="page-section">
@@ -13,6 +22,24 @@
   <h1 class="page-title">Monkey distribution by day</h1>
   <p class="page-sub">Daily statistics across all 100,000 monkeys.</p>
 </section>
+
+{#if data.survival.length > 0}
+  <section class="survival-section">
+    <header class="survival-head">
+      <h3 class="survival-title">Pack survival rate</h3>
+      <p class="survival-sub">
+        {#if latestPct != null}
+          <strong>{latestPct.toFixed(1)}%</strong> of {latest!.n_monkeys.toLocaleString()} monkeys are currently above their $10,000 starting cash
+        {:else}
+          % of monkeys still above starting cash over time
+        {/if}
+      </p>
+    </header>
+    <div class="chart-frame">
+      <SurvivalChart dates={survivalDates} pct={survivalPct} />
+    </div>
+  </section>
+{/if}
 
 <SplitPanel breakpoint={900}>
   {#snippet left()}
@@ -113,6 +140,42 @@
     color: var(--fg-muted);
     margin: 0;
     letter-spacing: 0.02em;
+  }
+
+  /* Survival chart block */
+  .survival-section { margin-bottom: 48px; }
+  .survival-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .survival-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin: 0;
+    font-weight: 500;
+  }
+  .survival-sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  .survival-sub strong { color: var(--fg); font-weight: 500; }
+  .chart-frame {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 20px 16px 12px;
   }
 
   .panel { display: flex; flex-direction: column; gap: 12px; }

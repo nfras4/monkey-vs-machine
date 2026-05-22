@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="monkey vs machine">
+  <rect width="1200" height="630" fill="oklch(0.96 0.015 75)"/>
+  <!-- Hairline grid like the dashboard -->
+  <g stroke="oklch(0.78 0.04 70)" stroke-width="1" opacity="0.4">
+    <line x1="60" y1="120" x2="1140" y2="120"/>
+    <line x1="60" y1="510" x2="1140" y2="510"/>
+  </g>
+  <!-- Wordmark -->
+  <g font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="22" letter-spacing="2">
+    <text x="60" y="98" fill="oklch(0.21 0.04 50)" font-weight="600">mvm</text>
+    <text x="125" y="98" fill="oklch(0.5 0.05 60)">/ monkey vs machine</text>
+  </g>
+  <!-- Hero pitch -->
+  <g font-family="Lora, Georgia, serif" fill="oklch(0.21 0.04 50)">
+    <text x="60" y="260" font-size="76" font-weight="500">Can a</text>
+    <text x="60" y="350" font-size="76" font-weight="500"><tspan fill="oklch(0.46 0.16 42)">scikit-learn model</tspan> beat</text>
+    <text x="60" y="440" font-size="76" font-weight="500">100,000 monkeys?</text>
+  </g>
+  <!-- Footer line -->
+  <text x="60" y="580" font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="20" fill="oklch(0.36 0.05 55)" letter-spacing="1">
+    sklearn HistGradientBoosting · 100,000 random traders · real S&amp;P 500 prices · daily ticks
+  </text>
+</svg>

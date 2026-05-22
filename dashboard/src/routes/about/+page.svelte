@@ -82,11 +82,23 @@
       <code>DETERMINISM.md</code> in the repo for the contract.</li>
   </ul>
 
+  <h2>How a tick actually runs</h2>
+  <p>
+    Every weekday afternoon (Brisbane time) my laptop wakes up and the Windows
+    Task Scheduler logon trigger fires <code>update.ps1</code>. That script
+    walks any missed weekdays via <code>scripts/catchup.py</code>, runs the
+    simulation locally, then POSTs the published rows to
+    <code>/admin/ingest</code> on this dashboard. Cloudflare D1 stores the
+    public mirror; the SvelteKit pages you're looking at read from D1 with a
+    60-second edge cache. The 100,000 unnamed monkeys live in a SQLite file
+    on the laptop and never get pushed.
+  </p>
+
   <h2>Source</h2>
   <p>
     Code on <a href="https://github.com/nfras4/monkey-vs-machine" target="_blank" rel="noreferrer">GitHub ↗</a>.
-    Built in Python + scikit-learn for compute, Cloudflare D1 + SvelteKit for
-    the public dashboard, systemd for the daily timer.
+    Compute is Python + scikit-learn; the dashboard is Svelte 5 + Chart.js
+    deployed on Cloudflare Pages with a D1 read-only mirror.
   </p>
 </article>
 
