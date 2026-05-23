@@ -18,23 +18,14 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
 
-
-def _us_today_date() -> str:
-    """Same convention as run_tick.py — US/Eastern."""
-    try:
-        from zoneinfo import ZoneInfo
-        return datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
-    except Exception:  # noqa: BLE001
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from mvm.dates import us_today_date  # noqa: E402
 from mvm.state.db import DEFAULT_DB_PATH, get_conn  # noqa: E402
 
 PUBLISH_SCHEMA_VERSION = 2
@@ -121,7 +112,7 @@ def main() -> int:
     parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
     args = parser.parse_args()
     if args.date is None:
-        args.date = _us_today_date()
+        args.date = us_today_date()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 

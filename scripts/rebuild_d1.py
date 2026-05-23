@@ -16,8 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from push_to_d1 import _us_today_date, build_payload, post_with_retry  # noqa: E402
+from push_to_d1 import build_payload, post_with_retry  # noqa: E402
 
+from mvm.dates import us_today_date  # noqa: E402
 from mvm.state.db import DEFAULT_DB_PATH, get_conn  # noqa: E402
 
 
@@ -41,7 +42,7 @@ def main() -> int:
     # End-date defaults to today US/Eastern to match the rest of the toolchain;
     # using UTC here would skip ticks for "today" between 00:00–13:00 ET on the
     # current day (after midnight UTC but before US close).
-    end = args.until or _us_today_date()
+    end = args.until or us_today_date()
     with get_conn(args.db, enforce_single_writer=False) as conn:
         rows = conn.execute(
             "SELECT date FROM ticks WHERE status='ok' AND date BETWEEN ? AND ? ORDER BY date",

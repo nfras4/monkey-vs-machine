@@ -8,22 +8,15 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from mvm.dates import us_today_date  # noqa: E402
 from mvm.runner_tick import run_tick  # noqa: E402
 from mvm.state.db import DEFAULT_DB_PATH, get_conn  # noqa: E402
-
-
-def _us_today_date() -> str:
-    try:
-        from zoneinfo import ZoneInfo
-        return datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
-    except Exception:  # noqa: BLE001
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
 def existing_tick_dates(db_path: Path):
@@ -42,7 +35,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
     start = datetime.strptime(args.since, "%Y-%m-%d").date()
-    end = datetime.strptime(args.until, "%Y-%m-%d").date() if args.until else datetime.strptime(_us_today_date(), "%Y-%m-%d").date()
+    end = datetime.strptime(args.until, "%Y-%m-%d").date() if args.until else datetime.strptime(us_today_date(), "%Y-%m-%d").date()
     existing = existing_tick_dates(args.db)
 
     cur = start

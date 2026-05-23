@@ -11,24 +11,14 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from mvm.dates import us_today_date  # noqa: E402
 from mvm.runner_tick import run_tick  # noqa: E402
 from mvm.state.db import DEFAULT_DB_PATH, get_conn  # noqa: E402
-
-
-def _us_today_date() -> str:
-    """Return today's date in US/Eastern. Daily bars are stamped to ET close."""
-    try:
-        from zoneinfo import ZoneInfo
-        return datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
-    except Exception:  # noqa: BLE001
-        # Fallback to UTC-5 approximation
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
 def already_ran(date: str, db_path: Path) -> bool:
@@ -45,7 +35,7 @@ def main() -> int:
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    date = args.date or _us_today_date()
+    date = args.date or us_today_date()
 
     if already_ran(date, args.db) and not args.force:
         logging.info("Tick for %s already ran (status=ok). Use --force to re-run.", date)
